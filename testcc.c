@@ -27,7 +27,12 @@ void one(int callThree, int callLib) {
 int main(int argc, char *argv[]) {
     int callThree = 0, callLib = 0;
 
-    for (int i=0; i<10000000; i++);
+    for (int i=0; i<1; i++) {
+        //for (int j=0; j<100000; j++);
+        two(0);
+    }
+    for (int i=0; i<1; i++)
+        for (int j=0; j<100000; j++);
     if( argc >= 2 ) {
         callThree = 1;
     }

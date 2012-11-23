@@ -19,13 +19,22 @@ LIBFLAGS = -fpic -shared
 CC = gcc
 CFLAGS = -Wall -pedantic -g -std=gnu99
 
-all: saliva testcc
+all: saliva lib_inst.so testcc
 
 saliva: saliva.o
 	$(CXX) $(CXXFLAGS) -L$(DYNINST_LIB) -L$(LOCAL_LIBS_DIR) -lcommon -ldyninstAPI -liberty -lpthread -o saliva saliva.o
 
 saliva.o: saliva.C
 	$(CXX) $(CXXFLAGS) -I$(LOCAL_INC_DIR) -I$(DYNINST_INCLUDE) -c saliva.C
+
+code_snippets.o: code_snippets.C
+	$(CXX) $(CXXFLAGS) -I$(LOCAL_INC_DIR) -I$(DYNINST_INCLUDE) -c code_snippets.C
+
+utils.o: utils.C
+	$(CXX) $(CXXFLAGS) -I$(LOCAL_INC_DIR) -I$(DYNINST_INCLUDE) -c utils.C
+
+lib_inst.so: lib_inst.C
+	$(CXX) $(CXXFLAGS) $(LIBFLAGS) lib_inst.C -o lib_inst.so  
 
 libtestcc.so: libtestcc.c libtestcc.h
 	$(CC) $(CFLAGS) $(LIBFLAGS) -o libtestcc.so libtestcc.c
