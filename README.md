@@ -30,8 +30,8 @@ libtestcc, testcc.
 
 First, execute ./saliva without any arguments to see the usage.
 
-% ./saliva
-Input binary not specified.
+% ./saliva    
+Input binary not specified.    
 Usage: ./saliva [-cv] <binary>    
     -c: use codeCoverage sampling data    
     -v: output verbose instrumentation    
@@ -46,7 +46,9 @@ directory '/dev/shm' with processid as filename. Using 'cat /dev/shm/<pid>'
 to see the tracing output. An abridged version of the output follows.
 
 % ./testcc.inst    
+
 % ./cat /dev/shm/<pid>....
+
 _init call_gmon_start frame_dummy __do_global_ctors_aux main two one two
 fini __do_global_dtors_aux
 
