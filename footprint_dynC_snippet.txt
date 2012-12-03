@@ -1,0 +1,2 @@
+inf`write(inf`fd, dyninst`function_name, inf`strlen(dyninst`function_name));
+inf`write(inf`fd, " ", 1);

@@ -1,0 +1,3 @@
+static char *filename = inf`malloc(64);
+inf`sprintf(filename, "/dev/shm/%d", inf`getpid());
+inf`fd = inf`open(filename, 01101, 0777);

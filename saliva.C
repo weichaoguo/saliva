@@ -40,6 +40,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <unistd.h>
+#include <fcntl.h>
 
 using namespace std;
 
@@ -50,26 +52,28 @@ using namespace std;
 #include "BPatch.h"
 #include "BPatch_binaryEdit.h"
 #include "BPatch_function.h"
+#include "dynC.h"
 
 #include "saliva.h"
-#include "lib_inst.h"
 
 using namespace Dyninst;
+using namespace dynC_API;
+
+//code coverage samples
+std::map <string, int> codeCoverageList;
+int ccsThreshold = 1024;
 
 static const char *USAGE = 
-  " [-vsb] <binary>\n \
-   -v: output verbose instrumentation\n \
-   -s: Instrument shared libraries also\n \
-   -b: trace basic block\n";
+  " [-cv] <binary>\n \
+   -c: use codeCoverage sampling data\n \
+   -v: output verbose instrumentation\n";
 
-static const char *OPT_STR = "vsa";
+static const char *OPT_STR = "cv";
 
 // configuration options
 char *inBinary = NULL;
-bool includeSharedLib = false;
 bool verbose = false;
-bool bbTrace = false;
-char **binaryArgv = NULL;
+bool ccs = false;
 
 char outBinary[BUFFER_SIZE];
 set<string> skipLibraries;
@@ -93,16 +97,11 @@ bool parseArgs(int argc, char *argv[]) {
     int c;
     while( (c = getopt(argc, argv, OPT_STR)) != -1 ) {
         switch((char)c) {
+        case 'c':
+            ccs = true;
+            break;
         case 'v':
             verbose = true;
-            break;
-        case 's':
-            // libraries linked to the binary will be instrumented 
-            includeSharedLib = true;
-            break;
-        case 'b':
-            // trace without optimizing
-            bbTrace = true;
             break;
         default:
             cerr << "Usage: " << argv[0] << USAGE;
@@ -122,9 +121,6 @@ bool parseArgs(int argc, char *argv[]) {
     strcpy(outBinary, inBinary);
     strcat(outBinary, ".inst");
 
-    endArgs++;
-    binaryArgv = argv + endArgs;
-
     return true;
 }
 
@@ -138,68 +134,28 @@ BPatch_function * findFuncByName(BPatch_image *appImage, const char *funcName)
     return funcs[0];
 }
 
-bool traceBasicBlock(BPatch_addressSpace *app, BPatch_function *func, int *traceId)
-{
-    char funcName[BUFFER_SIZE];
-    func->getName(funcName, BUFFER_SIZE);
-    BPatch_image *appImage = app->getImage();
-    BPatch_function * footprintFunc = findFuncByName(appImage, (char *)"footprintTrace");
-    //CFG
-    BPatch_flowGraph *CFG = func->getCFG();
-    if (! CFG) {
-        cerr << "Failed to find CFG for function " << funcName << endl;
-        return false;
-    }
-    BPatch_Vector < BPatch_basicBlockLoop * > loops;
-    if (!CFG->getOuterLoops(loops) || loops.size()==0) {
-        cerr << "Failed to find loops or No loops in " << funcName << endl;
-        return false;
-    }
-    BPatch_Vector < BPatch_basicBlockLoop * >::iterator loopIter;
-    for (loopIter=loops.begin(); loopIter!=loops.end(); ++loopIter)
-    {
-        BPatch_basicBlockLoop * loop = *loopIter;
-        BPatch_Vector<BPatch_point*> *loopEntry = CFG->findLoopInstPoints(BPatch_locLoopEntry, loop);
-        BPatch_Vector<BPatch_point*> *loopEndIter = CFG->findLoopInstPoints(BPatch_locLoopEndIter, loop);
-        // insert the footprint snippet
-        std::vector<BPatch_snippet *> args;
-        args.push_back(new BPatch_constExpr((*traceId)++));
-        BPatch_funcCallExpr *footprint = new BPatch_funcCallExpr(*footprintFunc,args);
-
-        if (! app->insertSnippet(*footprint, *loopEntry, BPatch_callBefore, BPatch_lastSnippet)) {
-            cerr << "Failed to insert instrumention at loop entry of " << funcName << endl;
-            return false;
-        }
-        if (! app->insertSnippet(*footprint, *loopEndIter)) {
-            cerr << "Failed to insert instrumention at loop iter end of " << funcName << endl;
-            return false;
-        }
-    }
-    return true;
-}
-
-bool traceFunc(BPatch_addressSpace *app, BPatch_function *func, int *traceId)
+bool traceFunc(BPatch_addressSpace *app, BPatch_function *func)
 {
     char moduleName[BUFFER_SIZE];
     func->getModuleName(moduleName, BUFFER_SIZE);
     char funcName[BUFFER_SIZE];
     func->getName(funcName, BUFFER_SIZE);
 
-    // if includeSharedLib is not set, skip dependent libraries
+    // skip dependent share libraries
     if (func->isSharedLib()) {
-        if (!includeSharedLib || skipLibraries.find(moduleName) != skipLibraries.end()) {
+        if (skipLibraries.find(moduleName) != skipLibraries.end()) {
             if (verbose)
                 cout << "Skipping library: " << moduleName << "'s " << funcName << endl ;
             return false;
         }
     }
-    // if is not lib func & trace basic block
-    else if (bbTrace)
-        traceBasicBlock(app, func, traceId);
+    if (ccs && codeCoverageList[funcName] > ccsThreshold) {
+        if (verbose)
+            cout << "Skipping library: " << moduleName << "'s " << funcName << endl ;
+        return false;
+    }
 
-    BPatch_image *appImage = app->getImage();
-    BPatch_function * footprintFunc = findFuncByName(appImage, (char *)"footprintTrace");
-    /* Insert the snippet at function entry */
+    // Insert the snippet at function entry
     vector < BPatch_point * >*funcEntry = func->findPoint(BPatch_entry);
     if (verbose)
         cout << "Inserting instrumention at function entry of " << funcName << endl;
@@ -207,21 +163,10 @@ bool traceFunc(BPatch_addressSpace *app, BPatch_function *func, int *traceId)
         cerr << "Failed to find entry for function " << funcName << endl;
         return false;
     }
-    /* Insert the snippet at function exit */
-    vector < BPatch_point * >*funcExit = func->findPoint(BPatch_exit);
-    if (verbose)
-        cout << "Inserting instrumention at function exit of " << funcName << endl;
-    if (NULL == funcExit) {
-        cerr << "Failed to find exit for function " << funcName << endl;
-        return false;
-    }
-    // insert the footprint snippet
-    std::vector<BPatch_snippet *> args;
-    args.push_back(new BPatch_constExpr((*traceId)++));
-    BPatch_funcCallExpr *footprint = new BPatch_funcCallExpr(*footprintFunc,args);
-    if(! app->insertSnippet(*footprint, *funcEntry, BPatch_callBefore, BPatch_lastSnippet)) {
+    BPatch_snippet *footprintSnippet = createSnippet(fopen("footprint_dynC_snippet.txt", "r"), *((*funcEntry)[0]), "footprintSnippet");
+    if(! app->insertSnippet(*footprintSnippet, *funcEntry, BPatch_callBefore, BPatch_lastSnippet)) {
         cerr << "Failed to insert instrumention at function entry of " << funcName << endl;
-    return false;
+        return false;
     }
 
     return true;
@@ -229,28 +174,16 @@ bool traceFunc(BPatch_addressSpace *app, BPatch_function *func, int *traceId)
 
 bool traceAll(BPatch_addressSpace *app)
 {
-    int traceId = 0;
     BPatch_module * defaultModule;
     BPatch_image *appImage = app->getImage();
-    //add lib_inst.so as the binary image's dynamic library
-    const char * instLibrary = "./lib_inst.so";
-    if (!app->loadLibrary (instLibrary)) {
-        cerr << "Failed to open instrumentation library" << endl;
-        return EXIT_FAILURE;
-    }
-    BPatch_function * initFunc = findFuncByName(appImage, (char *)"initTrace");
-    BPatch_function * exitFunc = findFuncByName(appImage, (char *)"exitTrace");
-
-    //BPatch_variableExpr *fd = app->malloc(*(appImage->findType("int")));
-    //BPatch_variableExpr *traceId = app->malloc(*(appImage->findType("long")));
-
+    app->malloc(*(appImage->findType("int")), "fd");
     /* To instrument every function in the binary
      * --> iterate over all the modules in the binary 
      * --> iterate over all functions in each modules */
     vector < BPatch_module * > * modules = appImage->getModules();
     vector < BPatch_module * >::iterator moduleIter;
 
-    for (moduleIter = modules->begin (); moduleIter != modules->end (); ++moduleIter)
+    for (moduleIter = modules->begin(); moduleIter != modules->end(); ++moduleIter)
     {
         char moduleName[BUFFER_SIZE];
         (*moduleIter)->getName(moduleName, BUFFER_SIZE);
@@ -260,7 +193,7 @@ bool traceAll(BPatch_addressSpace *app)
             defaultModule = (*moduleIter);
         }
         if((*moduleIter)->isSharedLib()) {
-            if (!includeSharedLib || skipLibraries.find(moduleName) != skipLibraries.end()) {
+            if (skipLibraries.find(moduleName) != skipLibraries.end()) {
                 if (verbose)
                     cout << "Skipping library: " << moduleName << endl ;
                 continue;
@@ -271,28 +204,20 @@ bool traceAll(BPatch_addressSpace *app)
         vector < BPatch_function * > * allFunctions = (*moduleIter)->getProcedures ();
         vector < BPatch_function * >::iterator funcIter;
 
-        for (funcIter = allFunctions->begin (); funcIter != allFunctions->end (); ++funcIter)
+        for (funcIter = allFunctions->begin(); funcIter != allFunctions->end(); ++funcIter)
         {
             BPatch_function * curFunc = *funcIter;
-            traceFunc(app, curFunc, &traceId);
+            traceFunc(app, curFunc);
         }
     }
     // insert the initialization snippet & fini snippet
-    std::vector<BPatch_snippet *> args;
-    BPatch_funcCallExpr *exitSnippet = new BPatch_funcCallExpr(*exitFunc,args);
-    args.push_back(new BPatch_constExpr("/dev/shm"));
-    BPatch_funcCallExpr *initSnippet = new BPatch_funcCallExpr(*initFunc,args);
-    BPatch_Vector < BPatch_snippet *> initSequenceVec;
-    initSequenceVec.push_back(initSnippet);
-    BPatch_sequence init(initSequenceVec);
-    BPatch_Vector < BPatch_snippet *> exitSequenceVec;
-    initSequenceVec.push_back(exitSnippet);
-    BPatch_sequence exit(exitSequenceVec);
-    if (!defaultModule->insertInitCallback(init)) {
+    BPatch_snippet *initSnippet = createSnippet(fopen("init_dynC_snippet.txt", "r"), *app, "initSnippet");
+    BPatch_snippet *finiSnippet = createSnippet(fopen("fini_dynC_snippet.txt", "r"), *app, "finiSnippet");
+    if (!defaultModule->insertInitCallback(*initSnippet)) {
         cerr << "Failed to insert init function in the module" << endl;
         return EXIT_FAILURE;
     }
-    if (!defaultModule->insertFiniCallback(exit)) {
+    if (!defaultModule->insertFiniCallback(*finiSnippet)) {
         cerr << "Failed to insert exit function in the module" << endl;
         return EXIT_FAILURE;
     }
@@ -304,6 +229,22 @@ int main (int argc, char *argv[])
     if(!parseArgs(argc, argv)) return EXIT_FAILURE;
 
     initSkipLibraries();
+
+    //load code coverage sampling data
+    if (ccs) {
+        char samplePath[BUFFER_SIZE];
+        sprintf(samplePath, "%s.ccsf", inBinary);
+        ifstream fin(samplePath);
+        string key;
+        int value, threshold=0;
+        while ( fin >> key >> value ) {
+            codeCoverageList[key] = value;
+            threshold += value;
+        }
+        //a simple way to choose the threshold for appropriate graind
+        threshold /= codeCoverageList.size();
+        ccsThreshold = ccsThreshold < threshold ? threshold : ccsThreshold;
+    }
 
     BPatch bpatch;
     // Open the specified binary

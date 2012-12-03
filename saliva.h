@@ -28,7 +28,6 @@
 
 void initSkipLibraries();
 bool parseArgs(int argc, char *argv[]);
-bool traceBasicBlock(BPatch_addressSpace *app, BPatch_function *func, int *traceId);
 bool traceFunc(BPatch_addressSpace *app, BPatch_function *func, int *traceId);
 bool traceAll(BPatch_addressSpace *app);
 // returns function with the name 'funcName', NULL for not found.

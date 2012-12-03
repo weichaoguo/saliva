@@ -1,0 +1,22 @@
+#!/bin/sh
+
+USAGE=" <binary> [args]"
+CCCMD="./ccs -fp"
+SACMD="./saliva -cv"
+
+if [ $# -eq 0 ] ; then
+    echo "USAGE: "$0$USAGE
+    exit 0
+fi
+export DYNINSTAPI_RT_LIB=/usr/lib64/dyninst/libdyninstAPI_RT.so.7
+export LD_LIBRARY_PATH=/usr/lib64/dyninst
+
+BINARY=$1
+#code coverage sampling first
+INSTCC="tmp.instcc"
+$CCCMD $BINARY $INSTCC
+shift 1
+./$INSTCC $@
+rm $INSTCC
+#then using the sampling data for tracing efficiently
+$SACMD $BINARY

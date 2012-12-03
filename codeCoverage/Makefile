@@ -1,12 +1,12 @@
 #
 # A GNU Makefile
 #
-# This Makefile builds the Task Progress Tracing Dyninst mutator 
-# 'the saliva of Anaconda'
+# This Makefile builds the codeCoverage Dyninst mutator
 #
 
 # Make sure to set the DYNINST_INCLUDE environment variable to the include directory where
 # Dyninst is installed DYNINST_LIB and lib directory
+
 DYNINST_INCLUDE = /usr/include/dyninst
 DYNINST_LIB =  /usr/lib64/dyninst
 
@@ -21,16 +21,16 @@ LIBFLAGS = -fpic -shared
 CC = gcc
 CFLAGS = -Wall -pedantic -g -std=gnu99
 
-SUBDIR = ./codeCoverage
-MAKE = make
+all: codeCoverage libInst.so testcc
 
-all: saliva testcc subsystem
+codeCoverage: codeCoverage.o
+	$(CXX) $(CXXFLAGS) -L$(DYNINST_LIB) -L$(LOCAL_LIBS_DIR) -lcommon -ldyninstAPI -liberty -lpthread -o codeCoverage codeCoverage.o
 
-saliva: saliva.o
-	$(CXX) $(CXXFLAGS) -L$(DYNINST_LIB) -L$(LOCAL_LIBS_DIR) -lcommon -ldyninstAPI -ldynC_API -liberty -lpthread -o saliva saliva.o
+libInst.so: libInst.C
+	$(CXX) $(CXXFLAGS) $(LIBFLAGS) libInst.C -o libInst.so  
 
-saliva.o: saliva.C
-	$(CXX) $(CXXFLAGS) -I$(LOCAL_INC_DIR) -I$(DYNINST_INCLUDE) -c saliva.C
+codeCoverage.o: codeCoverage.C
+	$(CXX) $(CXXFLAGS) -I$(LOCAL_INC_DIR) -I$(DYNINST_INCLUDE) -c codeCoverage.C
 
 libtestcc.so: libtestcc.c libtestcc.h
 	$(CC) $(CFLAGS) $(LIBFLAGS) -o libtestcc.so libtestcc.c
@@ -39,9 +39,4 @@ testcc: libtestcc.so testcc.c
 	$(CC) $(CFLAGS) -o testcc testcc.c ./libtestcc.so
 
 clean:
-	rm -f saliva ccs testcc *.so *.o *.inst *.ccsf
-
-subsystem:
-	cd $(SUBDIR) && $(MAKE)
-	cp codeCoverage/codeCoverage ./ccs
-	cp codeCoverage/libInst.so .
+	rm -f codeCoverage testcc *.so *.o *.instcc
