@@ -32,20 +32,21 @@ First, execute ./saliva without any arguments to see the usage.
 
 % ./saliva
 Input binary not specified.
-Usage: ./saliva [-cv] <binary>
-    -c: use codeCoverage sampling data
-    -v: output verbose instrumentation
+Usage: ./saliva [-cv] <binary>    
+    -c: use codeCoverage sampling data    
+    -v: output verbose instrumentation    
 
 Now, pass the testcc executable as input, instrumenting with verbose info
 and using code coverage samplings which is named '<binary>.ccsf'.(execute
 codeCoverage with the '-f' option to get the sampling file)
-% ./saliva -cv ./testcc
+% ./saliva -cv ./testcc    
 
 Then, run the testcc.inst program to generate process tracing data in the
 directory '/dev/shm' with processid as filename. Using 'cat /dev/shm/<pid>'
 to see the tracing output. An abridged version of the output follows.
 
-% ./testcc.inst
+% ./testcc.inst    
+% ./cat /dev/shm/<pid>....
 _init call_gmon_start frame_dummy __do_global_ctors_aux main two one two
 fini __do_global_dtors_aux
 
