@@ -484,34 +484,14 @@ China.}
 % You can use \ifCLASSOPTIONpeerreview for conditional compilation here if
 % you desire.
 
-
-
-% The publisher's ID mark at the bottom of the page is less important with
-% Computer Society journal papers as those publications place the marks
-% outside of the main text columns and, therefore, unlike regular IEEE
-% journals, the available text space is not reduced by their presence.
-% If you want to put a publisher's ID mark on the page you can do it like
-% this:
-%\IEEEpubid{0000--0000/00\$00.00~\copyright~2007 IEEE}
-% or like this to get the Computer Society new two part style.
-%\IEEEpubid{\makebox[\columnwidth]{\hfill 0000--0000/00/\$00.00~\copyright~2007 IEEE}%
-%\hspace{\columnsep}\makebox[\columnwidth]{Published by the IEEE Computer Society\hfill}}
-% Remember, if you use this you must call \IEEEpubidadjcol in the second
-% column for its text to clear the IEEEpubid mark (Computer Society jorunal
-% papers don't need this extra clearance.)
-
-
-
-
 % for Computer Society papers, we must declare the abstract and index terms
 % PRIOR to the title within the \IEEEcompsoctitleabstractindextext IEEEtran
 % command as these need to go into the title area created by \maketitle.
 \IEEEcompsoctitleabstractindextext{%
 \begin{abstract}
-%\boldmath
-The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.
 
-The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.The abstract goes here.
+Large-scale computing frameworks, either tenanted on widely available clouds or deployed in high-end local clusters, have become an indispensable software infrastructure to support numerous enterprise and scientific applications. Tasks executed on these frameworks are generally classified into data-intensive as well as compute-intensive ones. However, most existing frameworks, led by MapReduce, are only suitable for data-intensive tasks. Their task scheduler, as one of the most performance-influencing component, assumes that the proportion of data I/O reflects the task progress and state. Unfortunately, this assumption does not apply to most compute-intensive tasks. Due to biased estimation of task progress, traditional frameworks cannot timely cut off outliers and therefore largely prolong execution time when performing compute-intensive tasks. We propose a new framework designed for compute-intensive tasks. By using instrumentation and sampling techniques, our framework estimates compute-intensive task progress without resorting to data I/O. We employ a clustering method to identify outliers at runtime and perform speculative execution, speeding up task execution by up to ?\%. Moreover, our improvement to bare instrumentation limits overheads within ?\%, making our framework usable in production.
+
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
 % This preserves the distinction between vectors and scalars. However,
