@@ -1,6 +1,13 @@
 \section{Background}
 
-This section mainly makes a brief introduction to ProActive, the basic computing framework out solution extends.
+
+This section mainly illustrate the origin of this work and makes a brief introduction to ProActive, the basic computing framework our solution extends.
+
+\subsection{What inspired this work?}
+
+In our campus, we share a large local cluster having hundreds server nodes with many other institutes of research. As the local cluster is mainly build for scientific computing, it only provides a Load Shared Facility (LSF) job scheduling system for users submitting parallel or serial jobs. Additionally we have a small cluster we own. So we deployed a ProActive Scheduling System to administrate our computing resources uniformly. Benefited with ProActive platform, we extremely extends the flexibility of using the large cluster. But this introduce another problem that there are often a few outliers in a massive parallel job execution. Because of there is no collaboration and communication between the ProActive Scheduler and the job scheduler of the local cluster, computing resources contention leads to undetermined outliers sometimes. The outliers prolong the completion time of job and harm the performance of ProActive Scheduler seriously. This situation is similar to cloud, many virtual machines share some physical computational nodes. And lots of jobs executing on the ProActive Scheduler are scientific workflows and simulations, which are computing-intensive task. This problem inspires us to launch this work.
+
+\subsection{ProActive}
 
 ProActive Parallel Suite developed by French national laboratory INRIA, is an innovative open-source solution for acceleration of applications. It is seamlessly integrated with the management of high-performance clouds, and simplifies the parallel program development in cluster, grid and cloud computing environment. ProActive is completely based on Java development for parallel distributed computing, and does not make any modification on Java Virtual Machine (JVM), so it can run on any operating system which supports a standard Java environment. With a ProActive platform, the users tackle the acceleration and orchestration of all demanding applications easily. %\cite 
 
