@@ -262,11 +262,11 @@
 
 
 % *** SUBFIGURE PACKAGES ***
-%\ifCLASSOPTIONcompsoc
-%\usepackage[tight,normalsize,sf,SF]{subfigure}
-%\else
-%\usepackage[tight,footnotesize]{subfigure}
-%\fi
+\ifCLASSOPTIONcompsoc
+\usepackage[tight,normalsize,sf,SF]{subfigure}
+\else
+\usepackage[tight,footnotesize]{subfigure}
+\fi
 % subfigure.sty was written by Steven Douglas Cochran. This package makes it
 % easy to put subfigures in your figures. e.g., "Figure 1a and 1b". For IEEE
 % work, it is a good idea to load it with the tight package option to reduce
@@ -529,9 +529,11 @@ Computer Society, IEEEtran, journal, \LaTeX, paper, template.
 
 \input background.tex
 
-\input design.tex
+\input arch.tex
 
-\input impl.tex
+\input inst.tex
+
+\input spec.tex
 
 \input eval.tex
 
