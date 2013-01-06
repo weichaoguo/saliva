@@ -1,5 +1,5 @@
 \section{Evaluation}
-We deployed and evaluated N2O on a local high end cluster. Two representative applications cap3, ImageMagick were chosen for testing. As we focus on reduction in completion time of jobs, the overheads of N2O must be measured at first. Also the computing resource usage was considered and compared. Then we have a discussion about threshold tuning in N2O system.
+We deployed and evaluated N2O on a local high end cluster. Two representative applications cap3, ImageMagick were chosen for testing. As we focus on reduction in completion time of jobs, the overheads of N2O must be measured at first. Also the computing resource usage was considered and compared. Then we have a discussion about threshold tuning in N2O system. At last, we take one step further by evaluation a different strategy to mitigate outliers.
 
 \subsection{setup}
 
@@ -29,13 +29,13 @@ We randomly select some server nodes as a node source, and submit a job with lot
 \label{figure:outlier}
 \end{figure*}
 
-We pick up two pieces of this experiment, and make a scatter plots Figure 0. As shown in this figure, (a) has much more outlier than (b), and outliers need nearly twice or more time to complete the same task. As one server node contains several JVM nodes, The physical outliers is not as much as outliers of JVM nodes. With this naive inspection, we can conclude that even in high end clusters, there are a small number of outliers in some server nodes which may just work busily and some period of day when lots of jobs in the cluster.
+We pick up two pieces of this experiment, and make a scatter plots \ref{figure:outlier}. As shown in this figure, Fig.  \ref{figure:outlier}(a) has much more outlier than Fig.  \ref{figure:outlier}(b), and outliers need nearly twice or more time to complete the same task. As one server node contains several JVM nodes, The physical outliers is not as much as outliers of JVM nodes. With this naive inspection, we can conclude that even in high end clusters, there are a small number of outliers in some server nodes which may just work busily and some period of day when lots of jobs in the cluster.
 
 \subsection{Overheads and Accuracy of Instrumentation}
 
-Binary instrumentation often cost a very high overhead, which may tens of  times slow than no instrumentation executions. Although static binary instrumentation is more efficiency than dynamic ones, a few percent to tens of percent overhead of tracing all function entries, shown in the Figure 1 (a) and (b), can not be put up with production clusters. 
+Binary instrumentation often cost a very high overhead, which may tens of times slow than no instrumentation executions. Although static binary instrumentation is more efficiency than dynamic ones, a few percent to tens of percent overhead of tracing all function entries, shown in the Fig. \ref{figure:overheads} (a) and (b), can not be put up with production clusters. 
 
-To evaluate our trace approach with samples, we run the cap3 and ImageMagick in one server node of the high end cluster. Each application is tested tens of times with different inputs. Figure 1 shows the results of this experiment, On average, instrumentation with all function entries costs 8\% ~ 11\% extra time to complete the execution, while instrumentation with sampling used in N2O needs only 0.03\% ~ 0.1\% extra time costs.
+To evaluate our trace approach with samples, we run the cap3 and ImageMagick in one server node of the high end cluster. Each application is tested tens of times with different inputs. Fig.  \ref{figure:overheads} shows the results of this experiment, On average, instrumentation with all function entries costs 8\% - 11\% extra time to complete the execution, while instrumentation with sampling used in N2O needs only 0.03\% - 0.1\% extra time costs.
 
 \begin{figure*}
 \centering
@@ -49,7 +49,7 @@ To evaluate our trace approach with samples, we run the cap3 and ImageMagick in 
 \label{figure:overheads}
 \end{figure*}
 
-Such low overheads make N2O is enough efficient to deployed in a production system. But samples can not cover all executions, means the instrumentation way based on samples may sometime mistake parts of tracepoint caused progress report inaccurate. So we make a inspection with some trace cases of executions of cap3 and ImageMagick. We noticed that the progress trace with instrumentations with all function entries is more smooth than those with samples, such as ImageMagick execution cases shown in Figure 2. But in some cases the samples way is a little smooth than instrumentation with all functions, such as Cap3 case shown in Figure 2.
+Such low overheads make N2O is enough efficient to deployed in a production system. But samples can not cover all executions, means the instrumentation way based on samples may sometime mistake parts of tracepoint caused progress report inaccurate. So we make a inspection with some trace cases of executions of cap3 and ImageMagick. We noticed that the progress trace with instrumentations with all function entries is more smooth than those with samples, such as ImageMagick execution cases shown in Fig. \ref{figure:tracepoints}. But in some cases the samples way is a little smooth than instrumentation with all functions, such as Cap3 case shown in Fig. \ref{figure:tracepoints}.
 
 \begin{figure}
 \centering
@@ -60,11 +60,11 @@ Such low overheads make N2O is enough efficient to deployed in a production syst
 
 Since each execution is arbitrary with different inputs and conditions completely, every function may last short and long time slots in different executions. Unfortunately, we can not make an inference of absolute execution progress with  trace of instrumentation all function entries. Even instrumentation with all basic binary blocks or with all cpu instructions, there is no absolutely precision as no two identical leaves in the world. 
 
-But a relative smooth tracepoints hit rate can be guaranteed with instrumentation in same granularity, as shown in Figure 2, each line is composed  of few smooth segments. The outliers detection approach we proposed is inspired by this inspection. We use the relative progress to catch the outliers, so the way instrumentation with samplings is enough to us.
+But a relative smooth tracepoints hit rate can be guaranteed with instrumentation in same granularity, as shown in Fig.  \ref{figure:tracepoints}, each line is composed of few smooth segments. The outliers detection approach we proposed is inspired by this inspection. We use the relative progress to catch the outliers, so the way instrumentation with samplings is enough to us.
 
 \subsection{Can N2O mitigate outliers ?}
 
-Reduction in job completion time is a critical metric. We submitted Cap3 and Gaussian Blur jobs fifty times each to PA Scheduler with and without N2O. Figure 3 (a) and Figure 3 (b) show that job completion time improve by roughly 25\% on average. The histogram plots the best, worst, average reduction of Cap3 jobs and Gaussian Blur jobs. In the worst case of Cap3, there is a little increment of job completion with N2O, caused by a worst choose in speculative execution. On average, the reduction of job completion time with N2O is significant. Without N2O, caused of the hinder of outliers, the completion time of jobs has a big deviation with the best case, However with N2O, the completion time of jobs declined towards to the best case. These two experiments show that N2O mitigate the outliers efficiently.
+Reduction in job completion time is a critical metric. We submitted Cap3 and Gaussian Blur jobs fifty times each to PA Scheduler with and without N2O. Fig.  \ref{figure:completiontime} (a) and Fig.  \ref{figure:completiontime} (b) show that job completion time improve by roughly 25\% on average. The histogram plots the best, worst, average reduction of Cap3 jobs and Gaussian Blur jobs. In the worst case of Cap3, there is a little increment of job completion with N2O, caused by a worst choose in speculative execution. On average, the reduction of job completion time with N2O is significant. Without N2O, caused of the hinder of outliers, the completion time of jobs has a big deviation with the best case, However with N2O, the completion time of jobs declined towards to the best case. These two experiments show that N2O mitigate the outliers efficiently.
 
 \begin{figure*}
 \centering
@@ -87,9 +87,9 @@ N2O can bring benefit to job schedulers with improvement of job completion time.
 \label{figure:resourceusage}
 \end{figure}
 
-As shown in Figure 5, 20\% ~ 30\% more computing resource has been used by N2O for speculative executions. This make sense for some local clusters, which has low utilization and throughput. N2O helps them scheduling jobs more efficiency, and more computing resources used means the reduce of server idle time. But for a busy cluster or a cloud environment, where computing resource is not free, we expect speculative executions use resource as little as possible. We will analysis how to reduce waste of computing resource with little loss of reduction of the job completion time, and for some error-prone environment N2O can even use less computing resource with less failure executions.
+As shown in Fig.  \ref{figure:resourceusage}, 20\% - 30\% more computing resource has been used by N2O for speculative executions. This make sense for some local clusters, which has low utilization and throughput. N2O helps them scheduling jobs more efficiency, and more computing resources used means the reduce of server idle time. But for a busy cluster or a cloud environment, where computing resource is not free, we expect speculative executions use resource as little as possible. We will analysis how to reduce waste of computing resource with little loss of reduction of the job completion time, and for some error-prone environment N2O can even use less computing resource with less failure executions.
 
-\subsection{Discussion}
+\subsection{Threshold Tuning}
 
 How slow will outliers mostly be? Or when how much one execution is behind the majority, it must be an outlier? The threshold of outliers is critical for N2O. In our outlier detection approach, we use a naive one-degree Kmeans Clustering algorithm, and we use the variation of the centers of clusters to judge if one of them contains outliers. When the coefficient of variation is larger than threshold T, N2O see that clustering of executions as outliers.
 
@@ -100,7 +100,7 @@ How slow will outliers mostly be? Or when how much one execution is behind the m
 \label{figure:thresholdtuning}
 \end{figure}
 
-We use a fix server node running a shell script costing lots of CPU as the fake outlier. And make sure others nodes are running normally, if some unexpected outliers found, we just drop the execution result. In this way, we make sure of the other variation little. Tuning the threshold T from low to high, we run a Cap3 job which was splitted into 100 parallel executions to see the sensitivity. In Figure 6, As threshold rise, waste execution time declined and keeps low, completion time declined first and  turn up at a pivot. When threshold still increase, N2O finds little outliers and becomes lag to response. 
+We use a fix server node running a shell script costing lots of CPU as the fake outlier. And make sure others nodes are running normally, if some unexpected outliers found, we just drop the execution result. In this way, we make sure of the other variation little. Tuning the threshold T from low to high, we run a Cap3 job which was splitted into 100 parallel executions to see the sensitivity. In Fig. \ref{figure:thresholdtuning}, As threshold rise, waste execution time declined and keeps low, completion time declined first and  turn up at a pivot. When threshold still increase, N2O finds little outliers and becomes lag to response. 
 
 \begin{figure}
 \centering
@@ -109,4 +109,33 @@ We use a fix server node running a shell script costing lots of CPU as the fake 
 \label{figure:yetanotherthresholdtuning}
 \end{figure}
 
-A low threshold may be false positive, and cause a large mounts of speculative executions. These has been shown in Figure 7, which means a low success rate of speculations and wasting a lot of computing resource. With a meaningful threshold mitigate the false positive risks and keeps sensitive with outliers, this is the critical for N2O.
+A low threshold may be false positive, and cause a large mounts of speculative executions. These has been shown in Fig.  \ref{figure:yetanotherthresholdtuning}, which means a low success rate of speculations and wasting a lot of computing resource. With a meaningful threshold mitigate the false positive risks and keeps sensitive with outliers, this is the critical for N2O.
+
+\subsection{More than Speculation ?}
+
+Considered the idle time of clusters may not sufficient as much as the speculations need, We try a kill-restart strategy which is a little different from speculation. This strategy is more aggressive and adventurous. Rather than speculation, it immediately kill the potential outliers and restart these executions on another node not in the balcklist. This extreme scheduling decision cuts lots of computing resources usage for speculation, meanwhile may slow down the completion of job. Because of the outlier may return to normal and complete earlier than speculative execution.
+
+We verified this strategy by repeating the same experiment with modified N2O system equipmented with kill-restart scheduling strategy. Fig. \ref{figure:abort_completiontime} (a) and Fig. \ref{figure:abort_completiontime} (b) show that Kill-Restart strategy has a larger variation than the speculation one. In the worst case of Cap3 and Gaussian Blur, Kill-Restart strategy is obviously slower than the case without N2O and with N2O's speculation strategy. On average of Cap3 case, Kill-Restart strategy is similar with speculation strategy, about 25\% reduction of job completion time. In contract, Kill-Restart strategy has a slow down in the Gaussian Blur case. There is nearly 10\% more time used than the speculation strategy. These two experiments show that Kill-Restart strategy can reduce the completion time of jobs, but a little slower than the speculation strategy.
+
+\begin{figure*}
+\centering
+\subfigure[Cap3] {
+  \includegraphics[width=0.45\textwidth]{figures/abort_completiontime_cap3.eps}
+}
+\subfigure[GaussianBlur] {
+  \includegraphics[width=0.45\textwidth]{figures/abort_completiontime_gaussianblur.eps}
+}
+\caption{Job Completion Time}
+\label{figure:abort_completiontime}
+\end{figure*}
+
+With a little performance degraded, the Kill-Restart strategy cut down lots of CPU resource usage. The same as last experiment, We collected the statistics data of CPU usage from ProActive Resource Manager and plotted a histogram as follows.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.9\columnwidth]{figures/abort_resource_usage.eps}
+\caption{Computing Resource Usage}
+\label{figure:abort_resourceusage}
+\end{figure}
+
+As shown in \ref{figure:abort_resourceusage}, about 20\% CPU usage reduction obtained. With the Kill-Restart strategy, the waste of CPU resource is bounded about 10\%, Which verified the Kill-Restart strategy is valuable.
