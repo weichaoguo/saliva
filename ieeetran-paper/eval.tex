@@ -1,5 +1,5 @@
 \section{Evaluation}
-We deployed and evaluated N2O on a local high end cluster. Two representative applications cap3 , ImageMagick were chosen for testing. As we focus on reduction in completion time of jobs, the overheads of N2O must be measured at first. Also the computing resource usage was considered and compared. Then we have a discussion about threshold tuning in N2O system.
+We deployed and evaluated N2O on a local high end cluster. Two representative applications cap3, ImageMagick were chosen for testing. As we focus on reduction in completion time of jobs, the overheads of N2O must be measured at first. Also the computing resource usage was considered and compared. Then we have a discussion about threshold tuning in N2O system.
 
 \subsection{setup}
 
@@ -20,10 +20,10 @@ We randomly select some server nodes as a node source, and submit a job with lot
 \begin{figure*}
 \centering
 \subfigure[In the Afternoon] {
-  \includegraphics[width=0.31\columnwidth]{figures/outliers.eps}
+  \includegraphics[width=0.45\textwidth]{figures/outliers.eps}
 }
 \subfigure[In the Midnight] {
-  \includegraphics[width=0.31\columnwidth]{figures/yaoutliers.eps}
+  \includegraphics[width=0.45\textwidth]{figures/yaoutliers.eps}
 }
 \caption{Scatter of Cap3 Execution Time with Random 100 Nodes in Cluster}
 \label{figure:outlier}
@@ -40,10 +40,10 @@ To evaluate our trace approach with samples, we run the cap3 and ImageMagick in 
 \begin{figure*}
 \centering
 \subfigure[Cap3] {
-  \includegraphics[width=0.31\columnwidth]{figures/overhead_cap3.eps}
+  \includegraphics[width=0.45\textwidth]{figures/overhead_cap3.eps}
 }
 \subfigure[GaussianBlur] {
-  \includegraphics[width=0.31\columnwidth]{figures/overhead_gaussianblur.eps}
+  \includegraphics[width=0.45\textwidth]{figures/overhead_gaussianblur.eps}
 }
 \caption{Overheads of Instrumentation}
 \label{figure:overheads}
@@ -53,7 +53,7 @@ Such low overheads make N2O is enough efficient to deployed in a production syst
 
 \begin{figure}
 \centering
-\includegraphics[width=0.62\columnwidth]{figures/tracepoints_all_vs_sampling.eps}
+\includegraphics[width=0.9\columnwidth]{figures/tracepoints_all_vs_sampling.eps}
 \caption{Tracepoints' Trends}
 \label{figure:tracepoints}
 \end{figure}
@@ -69,10 +69,10 @@ Reduction in job completion time is a critical metric. We submitted Cap3 and Gau
 \begin{figure*}
 \centering
 \subfigure[Cap3] {
-  \includegraphics[width=0.31\columnwidth]{figures/completiontime_cap3.eps}
+  \includegraphics[width=0.45\textwidth]{figures/completiontime_cap3.eps}
 }
 \subfigure[GaussianBlur] {
-  \includegraphics[width=0.31\columnwidth]{figures/completiontime_gaussianblur.eps}
+  \includegraphics[width=0.45\textwidth]{figures/completiontime_gaussianblur.eps}
 }
 \caption{Job Completion Time}
 \label{figure:completiontime}
@@ -82,7 +82,7 @@ N2O can bring benefit to job schedulers with improvement of job completion time.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.62\columnwidth]{figures/resource_usage.eps}
+\includegraphics[width=0.9\columnwidth]{figures/resource_usage.eps}
 \caption{Computing Resource Usage}
 \label{figure:resourceusage}
 \end{figure}
@@ -95,7 +95,7 @@ How slow will outliers mostly be? Or when how much one execution is behind the m
 
 \begin{figure}
 \centering
-\includegraphics[width=0.62\columnwidth]{figures/threshold&completiontime.eps}
+\includegraphics[width=0.9\columnwidth]{figures/threshold&completiontime.eps}
 \caption{Completion Time / Waste Time with Threshold Tuning}
 \label{figure:thresholdtuning}
 \end{figure}
@@ -104,7 +104,7 @@ We use a fix server node running a shell script costing lots of CPU as the fake 
 
 \begin{figure}
 \centering
-\includegraphics[width=0.62\columnwidth]{figures/threshold&speculation.eps}
+\includegraphics[width=0.9\columnwidth]{figures/threshold&speculation.eps}
 \caption{Speculations / Successful Speculations with Threshold Tuning}
 \label{figure:yetanotherthresholdtuning}
 \end{figure}

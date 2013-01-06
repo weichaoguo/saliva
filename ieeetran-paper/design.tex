@@ -1,9 +1,27 @@
+\section{Instrumentation}
+
+There are two main challenges on tracing processes’ progress with binary instrumentation ways in production systems. One is the performance issue. Even a lightweight static binary instrumentation usually pulls down execution time in several to several tens percentage, making speculative executions pyrrhic.  The other one is about exactness accuracy. The Ideal progress tracing is uniform with the real execution, which means that it can predict how much the task has been done and how long will it still last? Taking downloading a file for example, if the downloading progress bar shows a 50% completion after 1 minute, it is clear about that half of the task has been done and it may still last about another 1 minute with a not too bad network. But for tasks running on the server nodes of cluster, heterogeneity between nodes, contentions for computing resources, imbalances in work-partitioning, all these restrictions prevent a reasonable prediction.
+
+We primarily concern about the performance of tracing in N2O instrumenter, then overcome the second dilemma with N2O speculator requiring no accurate prediction, discussed in the next section.
+
+With lots of case study, we refine two simple rules of binaries’ runtime behaviors. Functions in a binary can be placed in different level of an abstract syntax tree (AST). Functions in same level are often called with frequencies at similar order of magnitude in a range of executions, and the minority of functions in the top of call stack consume the majority of execution time, obviously a Pareto principle (80/20 principle). Table 1 shows a sampling case with the ImageMagick dynamic link library. There are 1060 functions in the library and only 33 functions called more than 10000 times in about 100 millions functions hits of the sampling.
+
+
+
+As we know, the entry points and exit points of functions and basic blocks are common instrument points. For the progress tracing purpose, a naive idea is an instrument with all functions and basic blocks, even each cpu instruction. Unfortunately, the overhead is proportional to the hit rates. So with a little more coarse-grained instrumentation, skipping the minority of functions will reduce the majority of the overhead of instrumentation. Targeting extremely little overhead, we proposed a sampling based instrument approach. This goal has been achieved as the evaluation shown.
+
+The sampler is designed to instrument each function’s entry with a code snippet that records each function call and maintains the sampling data.The sampling data is saved in a key-value pattern: function name, call times. With varieties of executions, different level functions in the AST can be distinguished by the statistics results of the sampling data. The instrumenter first load the sampling data and a threshold T. Then it inserts a code snippet at entries of each function, but skipping those having a larger call times than threshold T. With the sampler directions, the instrumenter can instrument the binaries in an appropriate granularity. The instrumented binary is written as a file at last. 
+
+We develop this instrument tool in a static instrumentation way based on DynIsnt library. Generally, there are three code snippets for the sampler: the initial one for creating some data structures for sampling, the final one for writing back the sampling data to a file, and the common used one for record a function call. For the instrumenter, the initial one for opening a file, the final one for closing a file, and the common used one just for increasing one to the number of tracepoints then writing it to the file. All the code snippets are carefully assembled with DynIsnt API and manipulated with the original binary. For the purpose of excellent performance, the instrumenter completes the file operations using the low level system call in the tmp directory, which is mounted as a RAM file system in Linux. It means that commonly several memory operations overhead is introduced into each function entry.
+
+\section{Sampling}
+
 \section{Speculation}
 For speculative executions, the first thing for N2O to do is finding the outliers. With the trace log returned by the instrumented processes, N2O use a Kmeans Clustering algorithm, which is commonly used in statistics analysis and data mining, to hunt the outliers. With outliers detected, N2O performs speculative executions, which needs interactive with job scheduler. 
 
 \begin{figure}
 \centering
-\includegraphics[width=0.62\columnwidth]{figures/speculator.eps}
+\includegraphics[width=0.9\columnwidth]{figures/speculator.eps}
 \caption{Speculator Design}
 \label{figure:speculator}
 \end{figure}
@@ -14,7 +32,7 @@ We novelly select two property of each executions to make outliers exposed, the 
 
 \begin{figure}
 \centering
-\includegraphics[width=0.62\columnwidth]{figures/executions_example.eps}
+\includegraphics[width=0.9\columnwidth]{figures/executions_example.eps}
 \caption{Executions Example}
 \label{figure:executionsexample}
 \end{figure}
