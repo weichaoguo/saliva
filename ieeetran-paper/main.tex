@@ -435,9 +435,7 @@
 % journal papers have the author affiliations above the "Manuscript
 % received ..."  text while in non-compsoc journals this is reversed. Sigh.
 
-\author{Weichao~Guo,
-        Jinglei~Ren,
-        and~Xun~Zhao% <-this % stops a space
+\author{% <-this % stops a space
 \IEEEcompsocitemizethanks{\IEEEcompsocthanksitem All authors are with the Department
 of Computer Science and Technology, Tsinghua University, Beijing 100084,
 China.}
@@ -626,7 +624,8 @@ Distributed system, parallel processing, compute-intensive, resource management.
 
 
 \section{Conclusion and Future Works}
-The conclusion goes here.
+Motivated by the outliers problem troubled the job schedulers a lot, we have analyzed the problem of in cluster. We proposed a instrument based speculation approach in general.
+We designed N2O system, which uses a simple Kmeans clustering to detect outliers with progress tracing. We have deployed N2O on ProActive Scheduler and it performs significantly speedup on a large local cluster with hundreds of server nodes.
 
 
 % if have a single appendix:
