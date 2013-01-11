@@ -1,55 +1,67 @@
 \section{Evaluation}
-We deployed and evaluated N2O on a local high end cluster. Two representative applications cap3, ImageMagick were chosen for testing. As we focus on reduction in completion time of jobs, the overheads of N2O must be measured at first. Also the computing resource usage was considered and compared. Then we have a discussion about threshold tuning in N2O system. At last, we take one step further by evaluation a different strategy to mitigate outliers.
+We deployed and evaluated NO2 on a local high end cluster. Two representative applications cap3, ImageMagick were chosen for testing. As we focus on reduction in completion time of jobs, the overheads of NO2 must be measured at first. Also the computing resource usage was considered and compared. Then we have a discussion about threshold tuning in NO2 system. At last, we take one step further by evaluation a different strategy to mitigate outliers.
 
-\subsection{setup}
+We evaluated NO2 on two hand-picked applications. Cap3 is a well known Expressed Sequence Tag (EST) sequence assembly program in bioinformatics, and ImageMagick is also a classic open source picture processing tool. In the cap3 case, there are many EST sequence files in FASTA format. So it is naturally splitted, with a XML descriptor template we provided, it is simple to parallel the job. Gaussian blur is a filter of ImageMagick blurring an image by a Gaussian function to reduce image noise. It is a widely used effect in graphics software, also known as Gaussian smoothing. In this case, the job is rendering a huge size image with Gaussian blur filter, the image was cut into small pieces with ImageMagick first, then filtered , join together at last. 
 
-The local cluster we used is a production one in Tsinghua University, which has hundreds of  server nodes. While each node has tens of GBs of RAM and two Intel Xeon X5670 2.93 GHz CPUs, each CPU has 6 cores. InfiniBand network and LUSTRE parallel file system are deployed in the cluster. With Load Sharing Facility (LSF) job scheduling system, Hundreds of Java Virtual Machines (JVMs) are launched as a LSF job in the cluster. These JVMs are added as compute nodes in ProActive Resource Manager. We used the cluster just in this way, adding the cluster as a LSF node source to the ProActive Resource Manager.
+We use two metrics for evaluation: job completion time and computing resource usage. As a job consists of lots of tasks, which may run in parallel, the job completion time refers to the duration of job submitted and all tasks of the job finished. We use the average rate of successful jobs completion in a fixed period, as a system metric. Considering speculative executions call for extra computing resource, we measure the computing resource usage with CPU utilization statistics, monitoring by ProActive Resource Manager. Given the baseline and NO2 CPU utilization with same workflows, the cost of speculative executions can be calculated.
 
-We evaluated N2O on two hand-picked applications. Cap3 is a well known Expressed Sequence Tag (EST) sequence assembly program in bioinformatics, and ImageMagick is also a classic open source picture processing tool. In the cap3 case, there are many EST sequence files in FASTA format. So it is naturally splitted, with a XML descriptor template we provided, it is simple to parallel the job. Gaussian blur is a filter of ImageMagick blurring an image by a Gaussian function to reduce image noise. It is a widely used effect in graphics software, also known as Gaussian smoothing. In this case, the job is rendering a huge size image with Gaussian blur filter, the image was cut into small pieces with ImageMagick first, then filtered , join together at last. 
+ We deployed NO2 as a speculative execution module in ProActive Scheduler. ProActive Scheduler is a high level job scheduling system base on ProActive library. With ProActive Resource Manager, which can combine lots of infrastructures, jobs and workflows can be submitted and scheduled to use a variety of computing resources by ProActive Scheduler. A job is described with a XML descriptor in details.
 
-We use two metrics for evaluation: job completion time and computing resource usage. As a job consists of lots of tasks, which may run in parallel, the job completion time refers to the duration of job submitted and all tasks of the job finished. We use the average rate of successful jobs completion in a fixed period, as a system metric. Considering speculative executions call for extra computing resource, we measure the computing resource usage with CPU utilization statistics, monitoring by ProActive Resource Manager. Given the baseline and N2O CPU utilization with same workflows, the cost of speculative executions can be calculated.
+\subsection{Verification}
 
- We deployed N2O as a speculative execution module in ProActive Scheduler. ProActive Scheduler is a high level job scheduling system base on ProActive library. With ProActive Resource Manager, which can combine lots of infrastructures, jobs and workflows can be submitted and scheduled to use a variety of computing resources by ProActive Scheduler. A job is described with a XML descriptor in details.
-
-\subsection{Is outlier exist ?}
-
+\subsubsection{Outliers}
 As a high end cluster, each server node has powerful CPU, sufficient memory, and enhanced with the InfiniBand network and high performance parallel file system. The heterogenity of hardware is little. Is outliers will come out in a short several minutes execution ?
 
-We randomly select some server nodes as a node source, and submit a job with lots of cap3 executions with same input data on hundreds of JVM nodes. Then we change the node source to some other random server nodes, and do the same. We choose different period of day to repeat the same test. We found that even in a several minutes execution, sometimes there are some outliers in different server nodes and different time unfortunately.
+We randomly select hundreds of server nodes as a node source, and submit a job with lots of cap3 executions with same input data on hundreds of JVM nodes. Then we change the node source to some other random server nodes, and do the same. We choose different period of day to repeat the same test. We found that even in a several minutes execution, sometimes there are some outliers in different server nodes and different time unfortunately.
 
-\begin{figure*}
+\begin{figure}
 \centering
-\subfigure[In the Afternoon] {
-  \includegraphics[width=0.45\textwidth]{figures/outliers.eps}
-}
-\subfigure[In the Midnight] {
-  \includegraphics[width=0.45\textwidth]{figures/yaoutliers.eps}
-}
-\caption{Scatter of Cap3 Execution Time with Random 100 Nodes in Cluster}
+\includegraphics[width=0.9\columnwidth]{figures/outliers.eps}
+\caption{Scatter of Cap3 Execution Time with Random 100 CPU cores in Cluster At 8:00 AM}
 \label{figure:outlier}
-\end{figure*}
+\end{figure}
 
-We pick up two pieces of this experiment, and make a scatter plots \ref{figure:outlier}. As shown in this figure, Fig.  \ref{figure:outlier}(a) has much more outlier than Fig.  \ref{figure:outlier}(b), and outliers need nearly twice or more time to complete the same task. As one server node contains several JVM nodes, The physical outliers is not as much as outliers of JVM nodes. With this naive inspection, we can conclude that even in high end clusters, there are a small number of outliers in some server nodes which may just work busily and some period of day when lots of jobs in the cluster.
-
-\subsection{Overheads and Accuracy of Instrumentation}
-
-Binary instrumentation often cost a very high overhead, which may tens of times slow than no instrumentation executions. Although static binary instrumentation is more efficiency than dynamic ones, a few percent to tens of percent overhead of tracing all function entries, shown in the Fig. \ref{figure:overheads} (a) and (b), can not be put up with production clusters. 
-
-To evaluate our trace approach with samples, we run the cap3 and ImageMagick in one server node of the high end cluster. Each application is tested tens of times with different inputs. Fig.  \ref{figure:overheads} shows the results of this experiment, On average, instrumentation with all function entries costs 8\% - 11\% extra time to complete the execution, while instrumentation with sampling used in N2O needs only 0.03\% - 0.1\% extra time costs.
-
-\begin{figure*}
+\begin{figure}
 \centering
-\subfigure[Cap3] {
-  \includegraphics[width=0.45\textwidth]{figures/overhead_cap3.eps}
-}
-\subfigure[GaussianBlur] {
-  \includegraphics[width=0.45\textwidth]{figures/overhead_gaussianblur.eps}
-}
-\caption{Overheads of Instrumentation}
-\label{figure:overheads}
-\end{figure*}
+\includegraphics[width=0.9\columnwidth]{figures/yaoutliers.eps}
+\caption{Scatter of Cap3 Execution Time with Random 100 CPU cores in Cluster At 8:00 PM}
+\label{figure:yaoutlier}
+\end{figure}
 
-Such low overheads make N2O is enough efficient to deployed in a production system. But samples can not cover all executions, means the instrumentation way based on samples may sometime mistake parts of tracepoint caused progress report inaccurate. So we make a inspection with some trace cases of executions of cap3 and ImageMagick. We noticed that the progress trace with instrumentations with all function entries is more smooth than those with samples, such as ImageMagick execution cases shown in Fig. \ref{figure:tracepoints}. But in some cases the samples way is a little smooth than instrumentation with all functions, such as Cap3 case shown in Fig. \ref{figure:tracepoints}.
+We pick up two pieces of this experiment, and make two scatter plots Fig. \ref{figure:outlier}. As shown in this figure, Fig.  \ref{figure:yaoutlier} has much more outlier than Fig. \ref{figure:outlier}, and outliers need nearly twice time to complete the same task. As one server node contains several CPU cores, The physical outliers is not as much as outliers of CPU cores. With this naive inspection, we can conclude that even in high end clusters, there are a small number of outliers in some server nodes and some period of day due to computing resource contention commonly. For a detail understanding about the outliers in this cluster, we last this experiment each hour several tens of times for a whole day. Fig. \ref{figure:outlier_stats} has shown a rough statistics for the probability of outlier each hour in one day.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.9\columnwidth]{figures/outlier_stats.eps}
+\caption{Probability of Outliers in One Day}
+\label{figure:outlier_stats}
+\end{figure}
+
+As this experiment itself may produce some computing resource contentions and the data is just in one day, the statistics is not strict. For a non-quantitative study with the outliers, we simply make an assumption that the event a CPU core of the cluster happens to be an outlier is independent with another. As jobs often need lots of CPU cores to run massive parallel tasks, the probability $P$ of a job running $N$ parallel tasks without outlier is:
+$$P = \prod_{i=1}^N p_i$$
+While $p_i$ is the probability of task $i$ of the job happens not to be a outlier. We choose the median of the Probability of outlier shown in the Fig. \ref{figure:outlier_stats} $\overline{p} = 0.01$, for a job having 100 parallel tasks, the probability of running without outliers $P$ is about 0.3660. When the job scales up to 1000 parallel tasks, even with a very little probability of outlier $\overline{p} = 0.005$, the probability of running without outliers $P$ is about 0.0067, which means it is nearly impossible to keep away from outliers. So A outliers aware task scheduling is extremely needed for a job with massive parallel tasks.
+
+\subsubsection{Overhead and Accuracy of Instrumentation}
+
+Binary instrumentation often cost a very high overhead, which may tens of times slow than no instrumentation executions. Although static binary instrumentation is more efficiency than dynamic ones, a few percentage to tens of percentage overhead of tracing all function entries naively, shown in the Fig. \ref{figure:overhead_cap3} and Fig. \ref{figure:overhead_gaussianblur}, can not be put up with production clusters. 
+
+To evaluate our progress trace approach, we run the cap3 and gaussianblur from ImageMagick in one server node of the cluster. Each application is tested tens of times with different inputs. Fig. \ref{figure:overhead_cap3} and Fig. \ref{figure:overhead_gaussianblur} shows the results of this experiment, On average, instrumentation with all function entries costs 8\% - 11\% extra time to complete the execution, while instrumentation based on function hits statistics in NO2 needs only 0.03\% - 0.1\% extra time costs.
+
+\begin{figure}
+\centering
+  \includegraphics[width=0.9\columnwidth]{figures/overhead_cap3.eps}
+\caption{Cap3 Instrumentation Overhead}
+\label{figure:overhead_cap3}
+\end{figure}
+
+\begin{figure}
+\centering
+  \includegraphics[width=0.9\columnwidth]{figures/overhead_gaussianblur.eps}
+\caption{Gaussianblur Instrumentation Overhead}
+\label{figure:overhead_gaussianblur}
+\end{figure}
+
+Such low overhead make NO2 is enough efficient to deployed in a production system. But the tracpoints are uneven, means the instrumentation may sometimes miss parts of progress the processes have made and caused progress report inaccurate. So we make a inspection with some trace cases of processes of Cap3， Gaussianblur and a combined rendering all from ImageMagick. We noticed that the progress trace with instrumentations with all function entries is a little more smooth than those with our instrumentation approach, such as ImageMagick cases shown in Fig. \ref{figure:tracepoints}. But in some cases our approach is a little more smooth than instrumentation with all functions, such as Cap3 case shown in Fig. \ref{figure:tracepoints}.
 
 \begin{figure}
 \centering
@@ -58,27 +70,31 @@ Such low overheads make N2O is enough efficient to deployed in a production syst
 \label{figure:tracepoints}
 \end{figure}
 
-Since each execution is arbitrary with different inputs and conditions completely, every function may last short and long time slots in different executions. Unfortunately, we can not make an inference of absolute execution progress with  trace of instrumentation all function entries. Even instrumentation with all basic binary blocks or with all cpu instructions, there is no absolutely precision as no two identical leaves in the world. 
+Since each execution is arbitrary with different inputs and conditions completely, every function may last short and long time slots in different executions. Unfortunately, we can not make an inference of absolute execution progress with  trace of instrumentation all function entries. Even instrumentation with all basic binary blocks, there is no absolutely accuracy. A reasonanle approach may be a customized instrumentation in kernel level, needed a modified Operating System kernel, which is nearly impossible to production system.
 
-But a relative smooth tracepoints hit rate can be guaranteed with instrumentation in same granularity, as shown in Fig.  \ref{figure:tracepoints}, each line is composed of few smooth segments. The outliers detection approach we proposed is inspired by this inspection. We use the relative progress to catch the outliers, so the way instrumentation with samplings is enough to us.
+But a relative smooth tracepoints hit rate can be guaranteed with instrumentation in same granularity, as shown in Fig.  \ref{figure:tracepoints}, each line is composed of few smooth segments. The outliers clustering approach we proposed is inspired by this inspection. We use the relative progress to catch the outliers, so the way instrumentation based on function hits statistics is enough to us.
 
-\subsection{Can N2O mitigate outliers ?}
+\subsection{In Local Cluster}
 
-Reduction in job completion time is a critical metric. We submitted Cap3 and Gaussian Blur jobs fifty times each to PA Scheduler with and without N2O. Fig.  \ref{figure:completiontime} (a) and Fig.  \ref{figure:completiontime} (b) show that job completion time improve by roughly 25\% on average. The histogram plots the best, worst, average reduction of Cap3 jobs and Gaussian Blur jobs. In the worst case of Cap3, there is a little increment of job completion with N2O, caused by a worst choose in speculative execution. On average, the reduction of job completion time with N2O is significant. Without N2O, caused of the hinder of outliers, the completion time of jobs has a big deviation with the best case, However with N2O, the completion time of jobs declined towards to the best case. These two experiments show that N2O mitigate the outliers efficiently.
+The local cluster we used is a production one in Tsinghua University, which has hundreds of  server nodes. While each node has tens of GBs of RAM and two Intel Xeon X5670 2.93 GHz CPUs, each CPU has 6 cores. InfiniBand network and LUSTRE parallel file system are deployed in the cluster. With Load Sharing Facility (LSF) job scheduling system, Hundreds of Java Virtual Machines (JVMs) are launched as a LSF job in the cluster. These JVMs are added as compute nodes in ProActive Resource Manager. We used the cluster just in this way, adding the cluster as a LSF node source to the ProActive Resource Manager.
 
-\begin{figure*}
+Reduction in job completion time is a critical metric. We submitted Cap3 and Gaussian Blur jobs fifty times each to ProActive Scheduler with and without NO2. Fig. \ref{figure:completiontime_cap3} and Fig. \ref{figure:completiontime_gaussianblur} show that job completion time improvement by roughly 25\% on average. The histogram plots the best, worst, average reduction of Cap3 jobs and Gaussian Blur jobs. In the worst case of Cap3, there is a little increment of job completion with NO2, caused by a worst choose in speculative execution. On average, the reduction of job completion time with NO2 is significant. Without NO2, caused of the hinder of outliers, the completion time of jobs has a big deviation with the best case, However with NO2, the completion time of jobs declined towards to the best case. These two experiments show that NO2 mitigate the outliers efficiently.
+
+\begin{figure}
 \centering
-\subfigure[Cap3] {
-  \includegraphics[width=0.45\textwidth]{figures/completiontime_cap3.eps}
-}
-\subfigure[GaussianBlur] {
-  \includegraphics[width=0.45\textwidth]{figures/completiontime_gaussianblur.eps}
-}
-\caption{Job Completion Time}
-\label{figure:completiontime}
-\end{figure*}
+\includegraphics[width=0.9\columnwidth]{figures/completiontime_cap3.eps}
+\caption{Completion Time of Cap3 Jobs}
+\label{figure:completiontime_cap3}
+\end{figure}
 
-N2O can bring benefit to job schedulers with improvement of job completion time. At the same time, It needs some amount of computing resource in addition. In aforementioned test, We collected the statistics data of CPU usage from ProActive Resource Manager and plotted a histogram as follows.
+\begin{figure}
+\centering
+\includegraphics[width=0.9\columnwidth]{figures/completiontime_gaussianblur.eps}
+\caption{Completion Time of GaussianBlur Jobs}
+\label{figure:completiontime_gaussianblur}
+\end{figure}
+
+NO2 can bring benefit to job schedulers with improvement of job completion time. At the same time, It needs some amount of computing resource in addition. In aforementioned test, We collected the statistics data of CPU usage from ProActive Resource Manager and plotted a histogram as follows.
 
 \begin{figure}
 \centering
@@ -87,55 +103,83 @@ N2O can bring benefit to job schedulers with improvement of job completion time.
 \label{figure:resourceusage}
 \end{figure}
 
-As shown in Fig.  \ref{figure:resourceusage}, 20\% - 30\% more computing resource has been used by N2O for speculative executions. This make sense for some local clusters, which has low utilization and throughput. N2O helps them scheduling jobs more efficiency, and more computing resources used means the reduce of server idle time. But for a busy cluster or a cloud environment, where computing resource is not free, we expect speculative executions use resource as little as possible. We will analysis how to reduce waste of computing resource with little loss of reduction of the job completion time, and for some error-prone environment N2O can even use less computing resource with less failure executions.
+As shown in Fig.  \ref{figure:resourceusage}, 20\% - 30\% more computing resource has been used by NO2 for speculative executions. This make sense for some local clusters, which has low utilization in most of the time of day. NO2 helps them scheduling jobs more efficiency, and more computing resources used means the reduce of server idle time. But for a busy cluster or cloud, where computing resource is not free, we expect speculative executions use resource as little as possible. We will analysis how to reduce waste of computing resource with little loss of reduction of the job completion time later, and for some error-prone environment NO2 can even use less computing resource with less failure executions.
 
-\subsection{Threshold Tuning}
+\subsection{In Cloud}
 
-How slow will outliers mostly be? Or when how much one execution is behind the majority, it must be an outlier? The threshold of outliers is critical for N2O. In our outlier detection approach, we use a naive one-degree Kmeans Clustering algorithm, and we use the variation of the centers of clusters to judge if one of them contains outliers. When the coefficient of variation is larger than threshold T, N2O see that clustering of executions as outliers.
+With attractive low price and demand payment, there are more and more computing tasks transfered to clouds in both academia and industry. The virtual clusters has been more and more popular, StarCluster [] is a toolkit for Amazon’s Elastic Compute Cloud (EC2), designed to automate and simplify the process of building, configuring, and managing clusters of virtual machines. We deployed such a virtual cluster on EC2 with StarCluster. This cluster has hundreds of virtual machine nodes. While each node is a M1 small instance, which has 1.7 GB RAM and one virtual core with 1 EC2 Compute Unit. A Elastic Block Storage (EBS) device is mounted as a share storage and  NFS file system is deployed in the cluster. We deployed ProActive Scheduler on this virtual cluster like before in local, With adding these virtual machine nodes as an SSHInfrastructure type node source, Hundreds of Java Virtual Machines (JVMs) are launched and added as computing nodes in ProActive Resource Manager.
+
+We began our evaluation in the cloud by measuring the outliers, same as the verification we have done in the local cluster. Unlike the high-end server nodes of local cluster, the EC2 instances are mediocre and less powerful. The outliers in the cloud are more obvious than the local cluster and prolong a 2X or more completion time for jobs, which has been shown in Fig. \ref{figure:outlier_cloud}.
 
 \begin{figure}
 \centering
-\includegraphics[width=0.9\columnwidth]{figures/threshold&completiontime.eps}
-\caption{Completion Time / Waste Time with Threshold Tuning}
-\label{figure:thresholdtuning}
+\includegraphics[width=0.9\columnwidth]{figures/cloud_outliers.eps}
+\caption{Scatter of Cap3 Execution Time with 100 instances in Amazon's EC2}
+\label{figure:outlier_cloud}
 \end{figure}
 
-We use a fix server node running a shell script costing lots of CPU as the fake outlier. And make sure others nodes are running normally, if some unexpected outliers found, we just drop the execution result. In this way, we make sure of the other variation little. Tuning the threshold T from low to high, we run a Cap3 job which was splitted into 100 parallel executions to see the sensitivity. In Fig. \ref{figure:thresholdtuning}, As threshold rise, waste execution time declined and keeps low, completion time declined first and  turn up at a pivot. When threshold still increase, N2O finds little outliers and becomes lag to response. 
+We submitted cap3 jobs in the same scale as local, and plot the histogram Fig. \ref{figure:completiontime_cap3_cloud}. As computing resources is not sufficient in the cloud, we also try a aborting strategy, also known as 'kill then restart' which is less computing resources cost than specualtion. We will discuss this strategy in the next section.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.9\columnwidth]{figures/cloud_completiontime_cap3.eps}
+\caption{Completion Time of Cap3 Jobs in Cloud}
+\label{figure:completiontime_cap3_cloud}
+\end{figure}
+
+There is roughly 15\% - 25\% job completion time reduction on average shown in Fig. \ref{figure:completiontime_cap3_cloud}. At the same time, The resource usage with speculation strategy is 100\%, which means there may be more speculations not performed for no sufficient computing resources and other jobs may be blocked with the same reason. The aborting strategy is more economic, only cost a 4\% - 5\% computing resource.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.9\columnwidth]{figures/cloud_resource_usage.eps}
+\caption{Computing Resource Usage in Cloud}
+\label{figure:resourceusage_cloud}
+\end{figure}
+
+\section{discussion}
+
+\subsection{Threshold Tuning}
+
+How slow will outliers mostly be? Or when how much one process is behind the majority, it must be an outlier? The threshold of outlier clusterings is critical for NO2. In our outlier clustering approach, we use a naive one-degree Kmeans Clustering algorithm where $K = 2$, and we use the coefficient of variation of the centers of clusters to judge if one of them contains outliers. When the coefficient of variation is larger than threshold T, NO2 judging that clustering of processes as outliers.
+
+We use three fix JVM nodes running a shell script costing lots of CPU to act as outliers. And make sure others nodes are running normally, if some unexpected outliers found, we just drop the execution result. In this way, we make sure of the other variation little. Tuning the threshold $T$ from low to high, we run a Cap3 job which was splitted into 100 parallel tasks to study the sensitivity of threshold $T$. In Fig. \ref{figure:thresholdtuning}, As threshold rise, waste speculations declined and keeps low, but successful spectulations have no obvious deviation. When threshold still increase, NO2 finds little outliers and becomes lag to response. 
 
 \begin{figure}
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/threshold&speculation.eps}
-\caption{Speculations / Successful Speculations with Threshold Tuning}
-\label{figure:yetanotherthresholdtuning}
+\caption{Speculations and Successful Speculations with Threshold Tuning}
+\label{figure:thresholdtuning}
 \end{figure}
 
-A low threshold may be false positive, and cause a large mounts of speculative executions. These has been shown in Fig.  \ref{figure:yetanotherthresholdtuning}, which means a low success rate of speculations and wasting a lot of computing resource. With a meaningful threshold mitigate the false positive risks and keeps sensitive with outliers, this is the critical for N2O.
+A low threshold may be false positive, and cause a large mounts of speculative executions. These has been shown in Fig.  \ref{figure:thresholdtuning}, which means a low success rate of speculations and wasting a lot of computing resource. With a meaningful threshold mitigate the false positive risks and keeps sensitive with outliers, this is the critical for NO2.
 
-\subsection{More than Speculation ?}
+\subsection{Aborting Strategy}
 
-Considered the idle time of clusters may not sufficient as much as the speculations need, We try a kill-restart strategy which is a little different from speculation. This strategy is more aggressive and adventurous. Rather than speculation, it immediately kill the potential outliers and restart these executions on another node not in the balcklist. This extreme scheduling decision cuts lots of computing resources usage for speculation, meanwhile may slow down the completion of job. Because of the outlier may return to normal and complete earlier than speculative execution.
+Considered the idle time of clusters may not sufficient as much as the speculations need, such as in the cloud. We try a aborting strategy which is a little different from speculation. This strategy is more aggressive and adventurous. Rather than speculation, it immediately abort the potential outliers and restart these tasks on another nodes not in the balcklist. This extreme scheduling decision cuts lots of computing resources usage which is needed for speculation, meanwhile may slow down the completion time of a job. Because of the outlier may return to normal and complete earlier than speculative execution.
 
-We verified this strategy by repeating the same experiment with modified N2O system equipmented with kill-restart scheduling strategy. Fig. \ref{figure:abort_completiontime} (a) and Fig. \ref{figure:abort_completiontime} (b) show that Kill-Restart strategy has a larger variation than the speculation one. In the worst case of Cap3 and Gaussian Blur, Kill-Restart strategy is obviously slower than the case without N2O and with N2O's speculation strategy. On average of Cap3 case, Kill-Restart strategy is similar with speculation strategy, about 25\% reduction of job completion time. In contract, Kill-Restart strategy has a slow down in the Gaussian Blur case. There is nearly 10\% more time used than the speculation strategy. These two experiments show that Kill-Restart strategy can reduce the completion time of jobs, but a little slower than the speculation strategy.
+We verified this strategy by repeating the same experiment with modified NO2 system equipmented with aborting scheduling strategy in both local cluster and cloud. Fig. \ref{figure:abort_completiontime_cap3} and Fig. \ref{figure:abort_completiontime_gaussianblur} show that aborting strategy has a larger variation than the speculation one in job completion time. In the worst case of Cap3 and Gaussian Blur, aborting strategy is obviously slower than the case without NO2 and with NO2's speculation strategy. On average of Cap3 case, aborting strategy is similar with speculation strategy, about 25\% reduction of job completion time. In contract, aborting strategy has a slow down in the Gaussian Blur case. There is nearly 10\% more time cost than the speculation strategy. These two experiments show that aborting strategy can reduce the completion time of jobs, but a little slower than the speculation strategy.
 
-\begin{figure*}
+\begin{figure}
 \centering
-\subfigure[Cap3] {
-  \includegraphics[width=0.45\textwidth]{figures/abort_completiontime_cap3.eps}
-}
-\subfigure[GaussianBlur] {
-  \includegraphics[width=0.45\textwidth]{figures/abort_completiontime_gaussianblur.eps}
-}
-\caption{Job Completion Time}
-\label{figure:abort_completiontime}
-\end{figure*}
+\includegraphics[width=0.9\columnwidth]{figures/abort_completiontime_cap3.eps}
+\caption{Cap3 Job Completion Time With Aborting Strategy}
+\label{figure:abort_completiontime_cap3}
+\end{figure}
 
-With a little performance degraded, the Kill-Restart strategy cut down lots of CPU resource usage. The same as last experiment, We collected the statistics data of CPU usage from ProActive Resource Manager and plotted a histogram as follows.
+\begin{figure}
+\centering
+\includegraphics[width=0.9\columnwidth]{figures/abort_completiontime_gaussianblur.eps}
+\caption{GaussianBlur Job Completion Time With Aborting Strategy}
+\label{figure:abort_completiontime_gaussianblur}
+\end{figure}
+
+With a little performance degraded, the aborting strategy cut down lots of CPU resource usage. The same as last experiment, We collected the statistics data of CPU usage from ProActive Resource Manager and plotted a histogram as follows.
 
 \begin{figure}
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/abort_resource_usage.eps}
-\caption{Computing Resource Usage}
+\caption{Computing Resource Usage of Aborting Strategy}
 \label{figure:abort_resourceusage}
 \end{figure}
 
-As shown in \ref{figure:abort_resourceusage}, about 20\% CPU usage reduction obtained. With the Kill-Restart strategy, the waste of CPU resource is bounded about 10\%, Which verified the Kill-Restart strategy is valuable.
+As shown in Fig. \ref{figure:abort_resourceusage}, about 20\% CPU usage reduction obtained. With the aborting strategy, the waste of CPU resource is bounded about 10\%, Which verified the aborting strategy is valuable. This has also comfirmed by the experiment in the cloud shown in Fig. \ref{figure:resourceusage_cloud}.
