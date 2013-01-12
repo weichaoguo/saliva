@@ -13,7 +13,7 @@
 %% Legal Notice:
 %% This code is offered as-is without any warranty either expressed or
 %% implied; without even the implied warranty of MERCHANTABILITY or
-%% FITNESS FOR A PARTICULAR PURPOSE! 
+%% FITNESS FOR A PARTICULAR PURPOSE!
 %% User assumes all risk.
 %% In no event shall IEEE or any contributor to this code be liable for
 %% any damages or losses, including, but not limited to, incidental,
@@ -157,7 +157,7 @@
 % graphicx was written by David Carlisle and Sebastian Rahtz. It is
 % required if you want graphics, photos, etc. graphicx.sty is already
 % installed on most LaTeX systems. The latest version and documentation can
-% be obtained at: 
+% be obtained at:
 % http://www.ctan.org/tex-archive/macros/latex/required/graphics/
 % Another good source of documentation is "Using Imported Graphics in
 % LaTeX2e" by Keith Reckdahl which can be found as epslatex.ps or
@@ -296,7 +296,7 @@
 % IEEEtran.cls handling of captions and this will result in nonIEEE style
 % figure/table captions. To prevent this problem, be sure and preload
 % caption.sty with its "caption=false" package option. This is will preserve
-% IEEEtran.cls handing of captions. Version 1.3 (2005/06/28) and later 
+% IEEEtran.cls handing of captions. Version 1.3 (2005/06/28) and later
 % (recommended due to many improvements over 1.2) of subfig.sty supports
 % the caption=false option directly:
 %\ifCLASSOPTIONcompsoc
@@ -388,7 +388,7 @@
 % http://www.ctan.org/tex-archive/macros/latex/contrib/endfloat/
 %
 % The IEEEtran \ifCLASSOPTIONcaptionsoff conditional can also be used
-% later in the document, say, to conditionally put the References on a 
+% later in the document, say, to conditionally put the References on a
 % page by themselves.
 
 
@@ -415,7 +415,7 @@
 %
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
-\title{$NO^2$: Speeding Up Massive Parallel Processing of Compute-Intensive Tasks}
+\title{$NO^2$: Speeding Up Parallel Processing of Massive Compute-Intensive Tasks}
 %
 %
 % author names and IEEE memberships
@@ -435,7 +435,7 @@
 % \IEEEcompsocthanksitem becomes a line break with idention. This
 % facilitates dual compilation, although admittedly the differences in the
 % desired content of \author between the different types of papers makes a
-% one-size-fits-all approach a daunting prospect. For instance, compsoc 
+% one-size-fits-all approach a daunting prospect. For instance, compsoc
 % journal papers have the author affiliations above the "Manuscript
 % received ..."  text while in non-compsoc journals this is reversed. Sigh.
 
@@ -447,10 +447,10 @@ China.}
 % \\ is fragile and will error, could use \hfil\break instead.
 \thanks{}}
 
-% note the % following the last \IEEEmembership and also \thanks - 
+% note the % following the last \IEEEmembership and also \thanks -
 % these prevent an unwanted space from occurring between the last author name
 % and the end of the author line. i.e., if you had this:
-% 
+%
 % \author{....lastname \thanks{...} \thanks{...} }
 %                     ^------------^------------^----Do not want these spaces!
 %
@@ -472,7 +472,7 @@ China.}
 {Guo \MakeLowercase{\textit{et al.}}: $NO_2$: Speeding Up Massive Parallel Processing of Compute-Intensive Tasks}
 % The only time the second header will appear is for the odd numbered pages
 % after the title page when using the twoside option.
-% 
+%
 % *** Note that you probably will NOT want to include the author's ***
 % *** name in the headers of peer review papers.                   ***
 % You can use \ifCLASSOPTIONpeerreview for conditional compilation here if
@@ -484,7 +484,7 @@ China.}
 \IEEEcompsoctitleabstractindextext{%
 \begin{abstract}
 
-Large-scale computing frameworks, either tenanted on widely available clouds or deployed in high-end local clusters, have become an indispensable software infrastructure to support numerous enterprise and scientific applications. Tasks executed on these frameworks are generally classified into data-intensive as well as compute-intensive ones. However, most existing frameworks, led by MapReduce, are only suitable for data-intensive tasks. Their task scheduler, as one of the most performance-influencing component, assumes that the proportion of data I/O reflects the task progress and state. Unfortunately, this assumption does not apply to most compute-intensive tasks. Due to biased estimation of task progress, traditional frameworks cannot timely cut off outliers and therefore largely prolong execution time when performing compute-intensive tasks. We propose a new framework designed for compute-intensive tasks. By using instrumentation and sampling techniques, our framework estimates compute-intensive task progress without resorting to data I/O. We employ a clustering method to identify outliers at runtime and perform speculative execution, speeding up task execution by up to ?\%. Moreover, our improvement to bare instrumentation limits overheads within ?\%, making our framework usable in production.
+Large-scale computing frameworks, either tenanted on the cloud or deployed in the high-end local cluster, have become an indispensable software infrastructure to support numerous enterprise and scientific applications. Tasks executed on these frameworks are generally classified into data-intensive and compute-intensive ones. However, most existing frameworks, led by MapReduce, are only suitable for data-intensive tasks. Their task scheduler assumes that the proportion of data I/O reflects the task progress and state. Unfortunately, this assumption does not apply to most compute-intensive tasks. Due to biased estimation of task progress, traditional frameworks cannot timely cut off outliers and therefore largely prolong execution time when performing compute-intensive tasks. We propose a new framework designed for compute-intensive tasks. By using instrumentation and automatic instrument point selector, our framework estimates compute-intensive task progress without resorting to data I/O. We employ a clustering method to identify outliers at runtime and perform speculative execution/aborting, speeding up task execution by up to 25\%. Moreover, our improvement to bare instrumentation limits overheads within 0.1\%, and the aborting-based execution only introduces 10\% more average CPU usage. Low overheads and resource consumption make our framework practically usable in the production environment.
 
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
@@ -557,7 +557,7 @@ Distributed system, parallel processing, compute-intensive, resource management.
 %\begin{figure}[!t]
 %\centering
 %\includegraphics[width=2.5in]{myfigure}
-% where an .eps filename suffix will be assumed under latex, 
+% where an .eps filename suffix will be assumed under latex,
 % and a .pdf suffix will be assumed for pdflatex; or what has been declared
 % via \DeclareGraphicsExtensions.
 %\caption{Simulation Results}
@@ -592,7 +592,7 @@ Distributed system, parallel processing, compute-intensive, resource management.
 % reference/describe all of them (a), (b), etc., within the main caption.
 
 
-% An example of a floating table. Note that, for IEEE style tables, the 
+% An example of a floating table. Note that, for IEEE style tables, the
 % \caption command should come BEFORE the table. Table text will default to
 % \footnotesize as IEEE normally uses this smaller font for tables.
 % The \label must come after \caption as always.
@@ -628,11 +628,9 @@ Distributed system, parallel processing, compute-intensive, resource management.
 % stfloats package.
 
 
+\section{Conclusion}
 
-\section{Conclusion and Future Works}
-Motivated by the outliers problem troubled the job schedulers a lot, we have analyzed the problem of in cluster. We proposed a instrument based speculation approach in general.
-We designed N2O system, which uses a simple Kmeans clustering to detect outliers with progress tracing. We have deployed N2O on ProActive Scheduler and it performs significantly speedup on a large local cluster with hundreds of server nodes.
-
+As most existing computing frameworks are oriented to data-intensive tasks, we propose an efficient and robust framework, $NO^2$, for massive compute-intensive tasks. Our framework is based on ProActive, and we focus on improvement of its scheduler, one of the most performance-influencing components. In a large-scale computing framework, a key responsibility of the scheduler is to avoid outliers which may severely prolong the job completion. To sum up, we introduce three new techniques to the scheduler and framework: firstly, we use instrumentation to indicate the progress of compute-intensive tasks, instead of using I/O proportion for data-intensive tasks; secondly, we sample the program before instrumentation to automatically select instrument points so that overheads are limited; thirdly, the k-means clustering method is employed in outlier identification without resorting to biased progress calculation. Evaluation has shown that $N^2$ largely reduces the job completion time with small instrumentation overheads and acceptable extra resource utilization.
 
 % if have a single appendix:
 %\appendix[Proof of the Zonklar Equations]
@@ -667,7 +665,7 @@ We designed N2O system, which uses a simple Kmeans clustering to detect outliers
 \fi
 
 
-The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...
+The authors would like to thank the anonymous reviewers.
 
 
 % Can use something like this to put references on a page
@@ -711,7 +709,7 @@ The authors would like to thank...The authors would like to thank...The authors 
 %\end{thebibliography}
 
 % biography section
-% 
+%
 % If you have an EPS/PDF photo (graphicx package needed) extra braces are
 % needed around the contents of the optional argument to biography to prevent
 % the LaTeX parser from getting confused when it sees the complicated
