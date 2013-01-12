@@ -411,7 +411,7 @@
 %
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
-\title{$NO^2$: Speeding Up Massive Parallel Processing of Compute-Intensive Tasks}
+\title{$NO^2$: Speeding Up Parallel Processing of Massive Compute-Intensive Tasks}
 %
 %
 % author names and IEEE memberships
@@ -480,7 +480,7 @@ China.}
 \IEEEcompsoctitleabstractindextext{%
 \begin{abstract}
 
-Large-scale computing frameworks, either tenanted on widely available clouds or deployed in high-end local clusters, have become an indispensable software infrastructure to support numerous enterprise and scientific applications. Tasks executed on these frameworks are generally classified into data-intensive as well as compute-intensive ones. However, most existing frameworks, led by MapReduce, are only suitable for data-intensive tasks. Their task scheduler, as one of the most performance-influencing component, assumes that the proportion of data I/O reflects the task progress and state. Unfortunately, this assumption does not apply to most compute-intensive tasks. Due to biased estimation of task progress, traditional frameworks cannot timely cut off outliers and therefore largely prolong execution time when performing compute-intensive tasks. We propose a new framework designed for compute-intensive tasks. By using instrumentation and sampling techniques, our framework estimates compute-intensive task progress without resorting to data I/O. We employ a clustering method to identify outliers at runtime and perform speculative execution, speeding up task execution by up to ?\%. Moreover, our improvement to bare instrumentation limits overheads within ?\%, making our framework usable in production.
+Large-scale computing frameworks, either tenanted on the cloud or deployed in the high-end local cluster, have become an indispensable software infrastructure to support numerous enterprise and scientific applications. Tasks executed on these frameworks are generally classified into data-intensive and compute-intensive ones. However, most existing frameworks, led by MapReduce, are only suitable for data-intensive tasks. Their task scheduler assumes that the proportion of data I/O reflects the task progress and state. Unfortunately, this assumption does not apply to most compute-intensive tasks. Due to biased estimation of task progress, traditional frameworks cannot timely cut off outliers and therefore largely prolong execution time when performing compute-intensive tasks. We propose a new framework designed for compute-intensive tasks. By using instrumentation and automatic instrument point selector, our framework estimates compute-intensive task progress without resorting to data I/O. We employ a clustering method to identify outliers at runtime and perform speculative execution/aborting, speeding up task execution by up to 25\%. Moreover, our improvement to bare instrumentation limits overheads within 0.1\%, and the aborting-based execution only introduces 10\% more average CPU usage. Low overheads and resource consumption make our framework practically usable in the production environment.
 
 \end{abstract}
 % IEEEtran.cls defaults to using nonbold math in the Abstract.
@@ -622,11 +622,9 @@ Distributed system, parallel processing, compute-intensive, resource management.
 % stfloats package.
 
 
+\section{Conclusion}
 
-\section{Conclusion and Future Works}
-Motivated by the outliers problem troubled the job schedulers a lot, we have analyzed the problem of in cluster. We proposed a instrument based speculation approach in general.
-We designed N2O system, which uses a simple K-means clustering to detect outliers with progress tracing. We have deployed N2O on ProActive Scheduler and it performs significantly speedup on a large local cluster with hundreds of server nodes.
-
+As most existing computing frameworks are oriented to data-intensive tasks, we propose an efficient and robust framework, $NO^2$, for massive compute-intensive tasks. Our framework is based on ProActive, and we focus on improvement of its scheduler, one of the most performance-influencing components. In a large-scale computing framework, a key responsibility of the scheduler is to avoid outliers which may severely prolong the job completion. To sum up, we introduce three new techniques to the scheduler and framework: firstly, we use instrumentation to indicate the progress of compute-intensive tasks, instead of using I/O proportion for data-intensive tasks; secondly, we sample the program before instrumentation to automatically select instrument points so that overheads are limited; thirdly, the k-means clustering method is employed in outlier identification without resorting to biased progress calculation. Evaluation has shown that $N^2$ largely reduces the job completion time with small instrumentation overheads and acceptable extra resource utilization.
 
 % if have a single appendix:
 %\appendix[Proof of the Zonklar Equations]
@@ -661,7 +659,7 @@ We designed N2O system, which uses a simple K-means clustering to detect outlier
 \fi
 
 
-The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...The authors would like to thank...
+The authors would like to thank the anonymous reviewers.
 
 
 % Can use something like this to put references on a page
