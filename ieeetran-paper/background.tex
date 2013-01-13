@@ -1,6 +1,6 @@
 \section{Background}
 
-This section makes a brief introduction to ProActive, the basic computing framework our solution extends.
+This section makes a brief introduction to ProActive \cite{huet04high}, the basic computing framework our solution extends.
 
 \subsection{ProActive}
 
@@ -11,8 +11,7 @@ The scheduler provides an abstraction of resources for users. It allows users to
 
 By default, the scheduler assigns tasks according to the default FIFO (First In First Out) priority policy. If a task needs to be scheduled quickly, the user can increase its priority, or change such basic policy. In ProActive, to create and add a new scheduling policy is very simply. The users only need to implement the policy interface, and execute the scheduler with the new policy as argument.
 
-The ProActive Scheduler is connected to a Resource Manager providing therefore the resource abstraction. %\cite
-The Resource Manager is a component for resource aggregation across the network. It sends compute units represented by ProActive nodes (Java Virtual Machines running the ProActive Runtime)   to the scheduler which manages the task workflow and distributed tasks on accessible resources. According to the deployment, it can retrieve the computing nodes using different standard such as SSH, LSF, OAR, gLite, EC2, etc.
+The ProActive Scheduler \cite{pascheduling} is connected to a Resource Manager \cite{parm} providing therefore the resource abstraction. The Resource Manager is a component for resource aggregation across the network. It sends compute units represented by ProActive nodes (Java Virtual Machines running the ProActive Runtime)   to the scheduler which manages the task workflow and distributed tasks on accessible resources. According to the deployment, it can retrieve the computing nodes using different standard such as SSH, LSF, OAR, gLite, EC2, etc.
 
 Including Scheduler, Resource Manager and other components, the ProActive platform can thus easily run on a cluster, a grid or a cloud or any mixture of them without modification, and get better performance for high performance and distributed computing.
 
