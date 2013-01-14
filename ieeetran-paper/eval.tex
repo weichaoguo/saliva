@@ -39,9 +39,9 @@ We pick up two pieces of this experiment, and make two scatter plots Fig. \ref{f
 
 As this experiment may produce some computing resource contentions and the data is just in one day, the statistics is not strict. For a non-quantitative study with the outliers, we simply make an assumption that a CPU core of the cluster happens to be an outlier is a random event, and the events are independent. As jobs often need lots of CPU cores to run massive parallel tasks, the probability $P$ of a job running $N$ parallel tasks without outlier is:
 
-$$P = \prod_{i=1}^N p_i$$
+$$P = \prod_{i=1}^N p_i(t)$$
 
-While $p_i$ is the probability of $i$th task of the job happens \emph{not} to be a outlier, $\overline{p}_i$ is the probability of $i$th task of the job happens to be a outlier. We choose the median of the Probability of outliers shown in the Fig. \ref{figure:outlier_stats} $\overline{p}_i = 0.01$, for a job having 100 parallel tasks, the probability of running without outliers $P$ is about 0.3660. When the job scales up to 1000 parallel tasks, even with a very little probability of outlier $\overline{p}_i = 0.005$, the probability of running without outliers $P$ is about 0.0067, which means it is nearly impossible to keep away from outliers. So an outlier-aware tasks scheduling is extremely needed for a job with massive parallel tasks.
+While $p_i(t)$ is the probability of $i$th task of the job happens \emph{not} to be a outlier at time $t$, $\overline{p}_i(t)$ is the probability of $i$th task of the job happens to be a outlier at time $t$. We choose the median of the Probability of outliers shown in the Fig. \ref{figure:outlier_stats} $\overline{p}_i(17) = 0.01$, for a job having 100 parallel tasks, the probability of running without outliers $P$ is about 0.3660. When the job scales up to 1000 parallel tasks, even with a very little probability of outlier $\overline{p}_i(16) = 0.005$, the probability of running without outliers $P$ is about 0.0067, which means it is nearly impossible to keep away from outliers. So an outlier-aware tasks scheduling is extremely needed for a job with massive parallel tasks.
 
 \subsubsection{Overhead and Accuracy of Instrumentation}
 
