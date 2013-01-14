@@ -1,7 +1,7 @@
 \section{Evaluation}
 We deployed and evaluated $NO^2$ on a local high end cluster and cloud both. Two representative applications cap3, ImageMagick are chosen for testing. As we focus on reduction in completion time of jobs, the overheads of $NO^2$ must be measured at first. Also the computing resource usage is considered and compared. With a comprehensive evaluation and lots of experiments, we make a discussion about $NO^2$ system in the next section.
 
-We evaluated $NO^2$ on two hand-picked applications. Cap3 is a well known Expressed Sequence Tag (EST) sequence assembly program in bioinformatics, and ImageMagick is also a classic open source picture processing tool. In the cap3 case, there are many EST sequence files in FASTA format. So it is naturally splitted, with the job description of ProActive Scheduler and shell script template we provided, it is simple to parallel the job. Gaussian blur is a filter of ImageMagick blurring an image by a Gaussian function to reduce image noise. It is a widely used effect in graphics software, also known as Gaussian smoothing. In this case, the job is rendering a huge size image with Gaussian blur filter, the image was cut into small pieces with ImageMagick first, then filtered , joined together at last.
+We evaluated $NO^2$ on two hand-picked applications. Cap3 is a well known Expressed Sequence Tag (EST) sequence assembly program in bioinformatics, and ImageMagick is also a classic open source picture processing tool. In the cap3 case, there are many EST sequence files in FASTA format. So it is naturally split, with the job description of ProActive Scheduler and shell script template we provided, it is simple to parallel the job. Gaussian blur is a filter of ImageMagick blurring an image by a Gaussian function to reduce image noise. It is a widely used effect in graphics software, also known as Gaussian smoothing. In this case, the job is rendering a huge size image with Gaussian blur filter, the image was cut into small pieces with ImageMagick first, then filtered , joined together at last.
 
 We use two metrics for evaluation: job completion time and computing resource usage. As a job consists of lots of tasks, which are parallel processing, the job completion time refers to the duration of job submitted and all tasks of the job finished successfully.\footnote{For most of scientific computing jobs, there are lots of iteration and modeling simulation in a workflow. The successor jobs depends on the precursor ones, for instance, the successor's input is the the precursor's output.} We use the average job completion time of lots of same scale workflows in a long period, as a system metric. Considering speculative executions call for extra computing resource, we measure the computing resource usage with CPU utilization statistics, monitoring by ProActive Resource Manager. Given the baseline and $NO^2$ CPU utilization with same workflow, the cost of speculative executions can be calculated.
 
@@ -37,7 +37,7 @@ We pick up two pieces of this experiment, and make two scatter plots Fig. \ref{f
 \label{figure:outlier_stats}
 \end{figure}
 
-As this experiment itself may produce some computing resource contentions and the data is just in one day, the statistics is not strict. For a non-quantitative study with the outliers, we simply make an assumption that a CPU core of the cluster happens to be an outlier is a random event, and independent with another. As jobs often need lots of CPU cores to run massive parallel tasks, the probability $P$ of a job running $N$ parallel tasks without outlier is:
+As this experiment may produce some computing resource contentions and the data is just in one day, the statistics is not strict. For a non-quantitative study with the outliers, we simply make an assumption that a CPU core of the cluster happens to be an outlier is a random event, and independent with another. As jobs often need lots of CPU cores to run massive parallel tasks, the probability $P$ of a job running $N$ parallel tasks without outlier is:
 
 $$P = \prod_{i=1}^N p_i$$
 
@@ -74,7 +74,7 @@ Such low overhead make $NO^2$ is enough efficient to deploy on a production syst
 
 Since each execution is arbitrary with different inputs and conditions completely, every function may last short or long time slots in different executions. Unfortunately, we can not make an inference of absolute execution progress with traces of instrumentation all function entries. Even instrumentation with all basic binary blocks, there is no absolutely accuracy. A reasonable approach may be a customized instrumentation in kernel level, needed a modified Operating System kernel, with a large mount of time cost which is nearly impossible to production system.
 
-But a relative smooth tracepoints hit rate can be guaranteed with instrumentation function entrie in same granularity, as shown in Fig. \ref{figure:tracepoints}, each line is composed of few smooth segments. The outliers clustering approach we proposed is inspired by this inspection. We use the relative progress to catch the outliers, so the approach instrumentation based on function hits statistics is enough to us.
+But a relative smooth tracepoints hit rate can be guaranteed with instrumentation function entire in same granularity, as shown in Fig. \ref{figure:tracepoints}, each line is composed of few smooth segments. The outliers clustering approach we proposed is inspired by this inspection. We use the relative progress to catch the outliers, so the approach instrumentation based on function hits statistics is enough to us.
 
 \subsection{In Local Cluster}
 
@@ -109,7 +109,7 @@ As shown in Fig. \ref{figure:resourceusage}, 20\% - 30\% more computing resource
 
 \subsection{In Cloud}
 
-With attractive low price and demand payment, there are more and more computing tasks transfered to clouds in both academia and industry. The virtual clusters has been more and more popular, StarCluster \cite{starcluster} is a toolkit for Amazon’s Elastic Compute Cloud (EC2), designed to automate and simplify the process of building, configuring, and managing clusters of virtual machines. We deployed such a virtual cluster on EC2 with StarCluster. This cluster has hundreds of virtual machine nodes. While each node is a M1 small instance, which has 1.7 GB RAM and one virtual CPU core with 1 EC2 Compute Unit. A Elastic Block Storage (EBS) device is mounted as a share storage and  NFS file system is deployed in the cluster. We deployed ProActive Scheduler on this virtual cluster like in local cluster, With adding these virtual machine nodes as an SSHInfrastructure type node source, Hundreds of Java Virtual Machines (JVMs) are launched and added as computing nodes in ProActive Resource Manager.
+With attractive low price and demand payment, there are more and more computing tasks transferred to clouds in both academia and industry. The virtual clusters has been more and more popular, StarCluster \cite{starcluster} is a toolkit for Amazon’s Elastic Compute Cloud (EC2), designed to automate and simplify the process of building, configuring, and managing clusters of virtual machines. We deployed such a virtual cluster on EC2 with StarCluster. This cluster has hundreds of virtual machine nodes. Each node is a M1 small instance, which has 1.7 GB RAM and one virtual CPU core with 1 EC2 Compute Unit. An Elastic Block Storage (EBS) device is mounted as share storage and NFS file system is deployed in the cluster. We deployed ProActive Scheduler on this virtual cluster like in local cluster, With adding these virtual machine nodes as an SSHInfrastructure type node source, Hundreds of Java Virtual Machines (JVMs) are launched and added as computing nodes in ProActive Resource Manager.
 
 We began our evaluation in the cloud by measuring the outliers, same as the verification we have done in the local cluster. Unlike the high-end server nodes of local cluster, the EC2 instances are mediocre and less powerful. The outliers in the cloud are more obvious than the local cluster and prolong a 2X or more completion time for jobs, which has been shown in Fig. \ref{figure:outlier_cloud}.
 
@@ -120,7 +120,7 @@ We began our evaluation in the cloud by measuring the outliers, same as the veri
 \label{figure:outlier_cloud}
 \end{figure}
 
-We submitted cap3 jobs in the same scale as local, and plot the histogram Fig. \ref{figure:completiontime_cap3_cloud}. As computing resources is not sufficient in the cloud, we also try a aborting strategy, also known as 'kill then restart' which is less computing resources cost than specualtion. We will discuss this strategy in the next section.
+We submitted cap3 jobs in the same scale as local, and plot the histogram Fig. \ref{figure:completiontime_cap3_cloud}. As computing resources is not sufficient in the cloud, we also try an aborting strategy, also known as 'kill then restart' which is less computing resources cost than speculation. We will discuss this strategy in the next section.
 
 \begin{figure}
 \centering
@@ -129,7 +129,7 @@ We submitted cap3 jobs in the same scale as local, and plot the histogram Fig. \
 \label{figure:completiontime_cap3_cloud}
 \end{figure}
 
-There is roughly 15\% - 22\% job completion time reduction on average shown in Fig. \ref{figure:completiontime_cap3_cloud}. At the same time, The resource usage with speculation strategy is 100\%, which means there may be more speculations not performed for no sufficient computing resources and other jobs may be blocked with the same reason. The aborting strategy is more economic, only cost a 4\% - 5\% addtional computing resource.
+There is roughly 15\% - 22\% job completion time reduction on average shown in Fig. \ref{figure:completiontime_cap3_cloud}. At the same time, the resource usage with speculation strategy is 100\%, which means there may be more speculations not performed for any sufficient computing resources and other jobs may be blocked with the same reason. The aborting strategy is more economic, only cost a 4\% - 5\% additional computing resource.
 
 \begin{figure}
 \centering
@@ -186,4 +186,4 @@ With a little performance degraded, the aborting strategy cut down lots of CPU r
 \label{figure:abort_resourceusage}
 \end{figure}
 
-As shown in Fig. \ref{figure:abort_resourceusage}, about 20\% CPU usage reduction obtained. With the aborting strategy, the waste of CPU resource is bounded about 10\%, Which verified the aborting strategy is valuable. This has also comfirmed by the experiment in the cloud shown in Fig. \ref{figure:resourceusage_cloud}.
+As shown in Fig. \ref{figure:abort_resourceusage}, about 20\% CPU usage reduction obtained. With the aborting strategy, the waste of CPU resource is bounded about 10\%, Which verified the aborting strategy is valuable. This has also comfirmed by the experiment in the cloud shown in Fig. \ref{figure:resourceusage_cloud}. 
