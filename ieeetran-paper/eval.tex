@@ -28,7 +28,7 @@ We randomly select hundreds of JVM nodes as a node source, and submit a job with
 \label{figure:yaoutlier}
 \end{figure}
 
-We pick up two pieces of this experiment, and make two scatter plots Fig. \ref{figure:outlier} and Fig. \ref{figure:yaoutlier}. As shown in Fig. \ref{figure:yaoutlier} has much more outlier than Fig. \ref{figure:outlier}, and outliers need nearly twice time to complete the same task. As one server node contains several CPU cores, The physical outliers is not as much as outliers of CPU cores. With this naive inspection, we can conclude that even in high end clusters, there are a small number of outliers in some server nodes and some period of day due to computing resource contention commonly. For a detail understanding about the outliers in the local cluster, we last this experiment each hour several tens of times for a whole day. Fig. \ref{figure:outlier_stats} has shown a rough statistics for the probability of outlier each hour in one day.
+We pick up two pieces of this experiment, and make two scatter plots Fig. \ref{figure:outlier} and Fig. \ref{figure:yaoutlier}. As shown in Fig. \ref{figure:yaoutlier}, there are much more outliers than Fig. \ref{figure:outlier}, and outliers need nearly twice time to complete the same task. As one server node contains several CPU cores, The physical outliers is not as much as outliers of CPU cores. With this naive inspection, we can conclude that even in high end clusters, there are a small number of outliers in some server nodes and some period of day due to computing resource contention commonly. For a detail understanding about the outliers in the local cluster, we last this experiment each hour several tens of times for a whole day. Fig. \ref{figure:outlier_stats} has shown a rough statistics for the probability of outlier each hour in one day.
 
 \begin{figure}
 \centering
@@ -41,7 +41,7 @@ As this experiment itself may produce some computing resource contentions and th
 
 $$P = \prod_{i=1}^N p_i$$
 
-While $p_i$ is the probability of $i$th task of the job happens \emph{not} to be a outlier, $\overline{p}_i$ is the probability of $i$th task of the job happens to be a outlier. We choose the median of the Probability of outlier shown in the Fig. \ref{figure:outlier_stats} $\overline{p}_i = 0.01$, for a job having 100 parallel tasks, the probability of running without outliers $P$ is about 0.3660. When the job scales up to 1000 parallel tasks, even with a very little probability of outlier $\overline{p}_i = 0.005$, the probability of running without outliers $P$ is about 0.0067, which means it is nearly impossible to keep away from outliers. So an outlier-aware tasks scheduling is extremely needed for a job with massive parallel tasks.
+While $p_i$ is the probability of $i$th task of the job happens \emph{not} to be a outlier, $\overline{p}_i$ is the probability of $i$th task of the job happens to be a outlier. We choose the median of the Probability of outliers shown in the Fig. \ref{figure:outlier_stats} $\overline{p}_i = 0.01$, for a job having 100 parallel tasks, the probability of running without outliers $P$ is about 0.3660. When the job scales up to 1000 parallel tasks, even with a very little probability of outlier $\overline{p}_i = 0.005$, the probability of running without outliers $P$ is about 0.0067, which means it is nearly impossible to keep away from outliers. So an outlier-aware tasks scheduling is extremely needed for a job with massive parallel tasks.
 
 \subsubsection{Overhead and Accuracy of Instrumentation}
 
@@ -63,7 +63,7 @@ To evaluate our progress trace approach, we run the cap3 and gaussianblur from I
 \label{figure:overhead_gaussianblur}
 \end{figure}
 
-Such low overhead make $NO^2$ is enough efficient to deploy on a production system. But the tracpoints are uneven, means the instrumentation may sometimes miss parts of progress the processes have made and caused progress report inaccurate. So we make an inspection with some trace cases of processes of Cap3, Gaussianblur and a combined image rendering all from ImageMagick. We noticed that the progress trace with instrumentations with all function entries is a little smoother than those with our instrumentation approach, such as ImageMagick cases shown in Fig. \ref{figure:tracepoints}. But in some cases our approach is a little smoother than instrumentation with all functions, such as Cap3 case shown in Fig. \ref{figure:tracepoints}.
+Such low overhead make $NO^2$ is enough efficient to deploy on a production system. But the tracpoints are uneven, means the instrumentation may sometimes miss parts of progress the processes have made and caused progress report inaccurate. So we make an inspection with some trace cases of processes of Cap3, Gaussianblur and a combined image rendering all from ImageMagick. We noticed that the progress trace with instrumentations with all function entries is a little smoother than those with our instrumentation approach, such as ImageMagick cases shows in Fig. \ref{figure:tracepoints}. But in some cases our approach is a little smoother than instrumentation with all functions, such as Cap3 case shows in Fig. \ref{figure:tracepoints}.
 
 \begin{figure}
 \centering
