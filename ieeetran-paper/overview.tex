@@ -7,15 +7,15 @@ $NO^2$ contains two main components, the instrumenter and tasks scheduling polic
 \begin{figure}
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/NO2_arch.eps}
-\caption{$NO^2$ Architecture}
+\caption{$NO^2$ architecture}
 \label{figure:no2arch}
 \end{figure}
 
-We carefully designed $NO^2$ to make sure of its independence with job scheduler which benefits users adapting to different job schedulers easily. As Fig. \ref{figure:no2arch} shows, the only interaction is the interface between $NO^2$ and ProActive Scheduler. The interface is for obtaining task status information of a job and requesting to kill or start a task. These abilities can be easily satisfied by any job scheduler's control interface, such as control script provided by ProActive Scheduler or command line tools provided by Condor.
+We carefully designed $NO^2$ to make sure of its independence with job scheduler which facilitates users' easily adapting to different job schedulers. As Fig. \ref{figure:no2arch} shows, the only interaction is the interface between $NO^2$ and ProActive Scheduler. The interface is for obtaining task status information of a job and requesting to kill or start a task. These abilities can be easily satisfied by any job scheduler's control interface, such as control script provided by ProActive Scheduler or command line tools provided by Condor.
 
-The instrumentation has two phases: function hits statistics and instrument with selected functions by the instrument points selector. For function hit statistics, another instrumentation is needed. As the statistics is offline, this instrumentation covers all functions in the binary code with no need to considering instrumentation overhead. The modified binary code runs with some input cases usually executed in realistic and saves the statistics results in a file. With the statistics, An instrumentation for progress trace can be performed with the binary code in a appropriate granularity.
+The instrumentation has two phases: function hits statistics and instrument with selected functions by the instrument points selector. For function hit statistics, another instrumentation is needed. As the statistics is offline, this instrumentation covers all functions in the binary code with no need to considering instrumentation overhead. The modified binary code runs with some input cases usually executed in realistic and saves the statistics results in a file. With the statistics, An instrumentation for progress trace can be performed with the binary code in an appropriate granularity.
 
-The speculation algorithm of tasks scheduling for a job is straightforward with a few of heuristics improvement driven by several rules of thumb. These empirical rules are reasonable and verified in practice. The first rule is to assign worst guy of outliers higher speculation priority. As speculation is not completely free, it is obviously advisable. Making sure of the split task and merge task not executing on irregular nodes is another important rule because of the impossible of exposing outlier with single task. On the other hand, the split and merge phases are always in the critical path of a job. The last one is speculation as soon as possible without irregular nodes. As the goal of speculation is earlier completion of job, speculation earlier and faster means better opportunity. The pseudo code of speculation algorithm is shown in Fig. \ref{fig-spec-algo}.
+The speculation algorithm of tasks scheduling for a job is straightforward with a few of heuristics improvement driven by several rules of thumb. These empirical rules are reasonable and verified in practice. The first rule is to assign a higher speculation priority to a worse outlier. As speculation is costly, it is obviously advisable. Making sure of the split task and merge task not executing on irregular nodes is another important rule because of the impossible of exposing outlier with single task. On the other hand, the split and merge phases are always in the critical path of a job. The last one is speculation as soon as possible without irregular nodes. As the goal of speculation is earlier completion of job, speculation earlier and faster means better opportunity. The pseudo code of speculation algorithm is shown in Fig. \ref{fig-spec-algo}.
 
 \begin{figure}
 \rule[-.2pt]{0.9\columnwidth}{0.9pt}
@@ -25,9 +25,6 @@ The speculation algorithm of tasks scheduling for a job is straightforward with 
 \begin{algorithmic}[1]
 \Require{instance of the $job$ and sleep $interval$}
 \Ensure{the job's state $job.state$}
-
-
-
 
 \While{$job.state\not=FinishedOrFaulty$}
     \State $tasks\gets job.tasks$
@@ -52,7 +49,7 @@ The speculation algorithm of tasks scheduling for a job is straightforward with 
 \EndWhile\label{specendwhile}
 \end{algorithmic}
 \rule[-.2pt]{0.9\columnwidth}{0.8pt}
-\caption{Tasks Speculation Algorithm}\label{fig-spec-algo}
+\caption{Task speculation algorithm}\label{fig-spec-algo}
 \end{figure}
 
 In the next two sections, we will mainly illustrate the design of instrumentation based on function hits statistics and outliers clustering, two key points in $NO^2$ system. 

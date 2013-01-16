@@ -15,14 +15,14 @@ We randomly select hundreds of JVM nodes as a node source, and submit a job with
 \begin{figure}
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/outliers.eps}
-\caption{Scatter of Cap3 Execution Time with Random 100 CPU cores in Cluster At 8:00 AM}
+\caption{Process durations of an Cap3 execution on 100 CPU cores in cluster at 8:00 am}
 \label{figure:outlier}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/yaoutliers.eps}
-\caption{Scatter of Cap3 Execution Time with Random 100 CPU cores in Cluster At 8:00 PM}
+\caption{Process durations of an Cap3 execution on 100 CPU cores in cluster at 8:00 pm}
 \label{figure:yaoutlier}
 \end{figure}
 
@@ -31,7 +31,7 @@ We pick up two pieces of this experiment, and make two scatter plots Fig. \ref{f
 \begin{figure}
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/outlier_stats.eps}
-\caption{Probability of Outliers in One Day}
+\caption{Probability of outliers during each hour of the day}
 \label{figure:outlier_stats}
 \end{figure}
 
@@ -50,14 +50,14 @@ To evaluate our progress trace approach, we run the cap3 and gaussianblur from I
 \begin{figure}
 \centering
   \includegraphics[width=0.9\columnwidth]{figures/overhead_cap3.eps}
-\caption{Cap3 Instrumentation Overhead}
+\caption{Cap3 instrumentation overhead}
 \label{figure:overhead_cap3}
 \end{figure}
 
 \begin{figure}
 \centering
   \includegraphics[width=0.9\columnwidth]{figures/overhead_gaussianblur.eps}
-\caption{Gaussianblur Instrumentation Overhead}
+\caption{Gaussianblur instrumentation overhead}
 \label{figure:overhead_gaussianblur}
 \end{figure}
 
@@ -66,7 +66,7 @@ Such low overhead make $NO^2$ is enough efficient to deploy on a production syst
 \begin{figure}
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/tracepoints_all_vs_sampling.eps}
-\caption{Tracepoints' Trends}
+\caption{Skewed tracepoint accumulation over time}
 \label{figure:tracepoints}
 \end{figure}
 
@@ -83,14 +83,14 @@ Reduction in job completion time is a critical metric. We submitted Cap3 and Gau
 \begin{figure}
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/completiontime_cap3.eps}
-\caption{Completion Time of Cap3 Jobs}
+\caption{Completion time of Cap3 jobs}
 \label{figure:completiontime_cap3}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/completiontime_gaussianblur.eps}
-\caption{Completion Time of GaussianBlur Jobs}
+\caption{Completion time of GaussianBlur jobs}
 \label{figure:completiontime_gaussianblur}
 \end{figure}
 
@@ -99,7 +99,7 @@ $NO^2$ can bring benefits to job schedulers with improvement of job completion t
 \begin{figure}
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/resource_usage.eps}
-\caption{Computing Resource Usage}
+\caption{Computing resource usage}
 \label{figure:resourceusage}
 \end{figure}
 
@@ -114,7 +114,7 @@ We began our evaluation in the cloud by measuring the outliers, same as the veri
 \begin{figure}
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/cloud_outliers.eps}
-\caption{Scatter of Cap3 Execution Time with 100 instances in Amazon's EC2}
+\caption{Process durations of an Cap3 execution on 100 instances in cloud}
 \label{figure:outlier_cloud}
 \end{figure}
 
@@ -123,7 +123,7 @@ We submitted cap3 jobs in the same scale as local, and plot the histogram Fig. \
 \begin{figure}
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/cloud_completiontime_cap3.eps}
-\caption{Completion Time of Cap3 Jobs in Cloud}
+\caption{Completion time of Cap3 jobs in cloud}
 \label{figure:completiontime_cap3_cloud}
 \end{figure}
 
@@ -132,7 +132,7 @@ There is roughly 15\% - 22\% job completion time reduction on average shown in F
 \begin{figure}
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/cloud_resource_usage.eps}
-\caption{Computing Resource Usage in Cloud}
+\caption{Computing resource usage in cloud}
 \label{figure:resourceusage_cloud}
 \end{figure}
 
@@ -149,7 +149,7 @@ We use three fix JVM nodes running a shell script costing lots of CPU to act as 
 \begin{figure}
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/threshold&speculation.eps}
-\caption{Speculations and Successful Speculations with Threshold Tuning}
+\caption{Number of speculative executions over threshold values}
 \label{figure:thresholdtuning}
 \end{figure}
 
@@ -164,14 +164,14 @@ We verified this strategy by repeating the same experiment with modified $NO^2$ 
 \begin{figure}
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/abort_completiontime_cap3.eps}
-\caption{Cap3 Job Completion Time With Aborting Strategy}
+\caption{Cap3 job completion time with aborting strategy}
 \label{figure:abort_completiontime_cap3}
 \end{figure}
 
 \begin{figure}
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/abort_completiontime_gaussianblur.eps}
-\caption{GaussianBlur Job Completion Time With Aborting Strategy}
+\caption{GaussianBlur job completion time with aborting strategy}
 \label{figure:abort_completiontime_gaussianblur}
 \end{figure}
 
@@ -180,7 +180,7 @@ With a little performance degraded, the aborting strategy cut down lots of CPU r
 \begin{figure}
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/abort_resource_usage.eps}
-\caption{Computing Resource Usage of Aborting Strategy}
+\caption{Computing resource usage of aborting strategy}
 \label{figure:abort_resourceusage}
 \end{figure}
 

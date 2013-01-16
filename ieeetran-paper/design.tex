@@ -7,7 +7,7 @@ We primarily concern the performance of tracing in $NO^2$'s instrumentation, and
 With much case study, we have had two simple observations on binary code runtime behaviors. Functions in a binary can be placed on different levels of an abstract syntax tree (AST). Functions on the same level of AST are often called at similar frequency, and the minority of functions on the low level of AST consumes the majority of execution time, mostly following a Pareto principle (80/20 principle). Table \ref{table:inst-stats} shows the statistics of function hits of the instrumented ImageMagick dynamic link library. There are 1060 functions in the library and only 33 functions called more than 10,000 times in five executions.
 
 \begin{table}[h]
-\caption{statistics of function hits of ImageMagick executions}
+\caption{Statistics of function hits of ImageMagick}
 \label{table:inst-stats}
 \begin{center}
 \begin{tabular}{r|r|l}
@@ -25,7 +25,7 @@ $0$    - $10^1$ & 922 & GaussianBlurImage \\
 \hline
 \end{tabular}
 \end{center}
-Note: Only one of functions of each order of magnitude is shown in the table for example.
+Note: Only one function of each order of magnitude is shown in the table for example.
 \end{table}
 
 As we know, the entry/exit points of functions and basic blocks are commonly used instrument points. For the purpose of progress tracing, a naive idea is to instrument with each entry and exit point of all functions and basic blocks. Apparently, the overhead is proportional to the hit rates. So with a little more coarse-grained instrumentation, we can skip the minority of functions but reduce the majority of overheads. Aimed at extremely little overheads, we proposed a function hit-statistics based instrument approach. This goal has been achieved as the evaluation section shows.
@@ -49,7 +49,7 @@ We novelly select two property of each process's traces to make outliers exposed
 \begin{figure}
 \centering
 \includegraphics[width=0.9\columnwidth]{figures/executions_example.eps}
-\caption{Executions Example}
+\caption{Tracepoints of two example executions}
 \label{figure:executionsexample}
 \end{figure}
 
