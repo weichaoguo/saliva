@@ -27,20 +27,18 @@ demonstrated.
 
 $NO^2$ acts as an extension to the ProActive Scheduler. ProActive Scheduler is a high
 level job scheduling system based on ProActive library. With ProActive Resource Manager,
-which can combine lots of infrastructures, jobs and workflows can be submitted and
-scheduled to use a variety of computing resources by ProActive Scheduler. A job is
+jobs can be submitted and scheduled to use variable types of computing resources. A job is
 described with a XML description.
 
 \subsubsection{Outliers}
-As a high end cluster, each server node has powerful CPU, sufficient memory, and enhanced
-with the InfiniBand network and high performance parallel file system. The heterogeneity
-of hardware is little. Will outliers come out in a short several minutes execution ?
+In a high end cluster, each server node has powerful CPU, sufficient memory, and is equipped
+with the high performance network (e.g., InfiniBand) and usually a parallel file system. The heterogeneity
+of hardware is limited. Will outliers come out in a short several-minute execution?
 
-We randomly select hundreds of JVM nodes as a node source, and submit a job with hundreds
-of parallel tasks with same input data on hundreds of JVM nodes. Then we change the node
-source to some other random JVM nodes and submit a same job. We choose different period of
-day to repeat the same test. We found that even in a several minutes execution, sometimes
-there are a few of outliers in different server nodes and different time unfortunately.
+We randomly select a hundred JVM nodes, and submit a job with hundreds
+of parallel tasks. The test is repeated in different periods of
+day. We found that even in a several-minute execution, sometimes
+there are a few outliers, and they appear on random server nodes and at different times.
 
 \begin{figure}
 \centering
