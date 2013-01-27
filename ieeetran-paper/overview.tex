@@ -1,21 +1,21 @@
 \section{System Overview}
 
-Motivated by outliers problem, we named our system for NO Outliers ($NO^2$) expressing our
-best wishes and indicating $NO^2$'s mission. As far as we know, the only one system have a
-similar name with $NO^2$ in the world, called N2O system, is primarily concerned with
-introducing fuel and nitrous into the engine's cylinders, and combining them for more
-efficient combustion. It is typically used to provide an instantaneously speedup for auto,
-while our $NO^2$ system can persistently speeding up parallel processing for massive
+Inspired by the problem caused by outliers, we name our system NO Outliers ($NO^2$) which implies our
+wishes as well as indicates $NO^2$'s mission. It is learned that there is only one system which has a
+similar name with $NO^2$ in the world.It is named N2O system, primarily concerning with
+introducing fuel and nitrous into the engine's cylinders and combining which for more
+efficient combustion. N2O system is typically used for providing an instantaneously speedup for auto.
+Whereas, our $NO^2$ system can continuously speed up parallel processing for massive
 compute-intensive tasks in clusters and clouds.
 
-$NO^2$ contains two main components, the instrumenter and tasks scheduling policy
-generater. The instrumenter has a perfect partner, the instrument points selector, which
-collects the statistics of function hits in a variety of executions and select some
+$NO^2$ contains two main components which are the instrumenter and tasks scheduling policy
+generater. The instrumenter's perfect partner- the instrument points selector- 
+collects the statistics of function hits in a variety of executions and selects some
 function entries for a appropriate instrumentation granularity. Though the instrumenter
-can finish the instrument task for tracing progress itself, an additional overhead as much
-as several percentages of execution time is unavoidable. This is unacceptable in
-production system, but with the instrument points selector's cooperation, overheads can be
-cut down to little, even negligible. Details will be shown in the evaluation section. The
+can finish the instrument task of tracing progress by itself, an additional overhead such
+as some percentage of execution time is unavoidable. This is unacceptable in
+production system. But with the instrument points selector's cooperation, overheads can be
+reduced to a low level, or even can be negligible. Details will be shown in the evaluation section. The
 tasks scheduling policy generater is supported by the outliers clustering. With the
 outliers information, an optimized tasks scheduling policy can be generated for the job
 running on cluster.
@@ -27,8 +27,8 @@ running on cluster.
 \label{figure:no2arch}
 \end{figure}
 
-We carefully designed $NO^2$ to make sure of its independence with job scheduler which
-facilitates users' easily adapting to different job schedulers. As Fig.
+We carefully designed $NO^2$ to assure its independence with job scheduler which
+facilitates users' adaptation to different job schedulers. As Fig.
 \ref{figure:no2arch} shows, the only interaction is the interface between $NO^2$ and
 ProActive Scheduler. The interface is for obtaining task status information of a job and
 requesting to kill or start a task. These abilities can be easily satisfied by any job
@@ -39,19 +39,19 @@ The instrumentation has two phases: function hits statistics and instrument with
 functions by the instrument points selector. For function hit statistics, another
 instrumentation is needed. As the statistics is offline, this instrumentation covers all
 functions in the binary code with no need to considering instrumentation overhead. The
-modified binary code runs with some input cases usually executed in realistic and saves
-the statistics results in a file. With the statistics, An instrumentation for progress
+modified binary code runs with some input cases usually executed in realistic （看不懂丫……）and saves
+the statistics results in a file. With the statistics, the instrumentation for progress
 trace can be performed with the binary code in an appropriate granularity.
 
 The speculation algorithm of tasks scheduling for a job is straightforward with a few of
 heuristics improvement driven by several rules of thumb. These empirical rules are
-reasonable and verified in practice. The first rule is to assign a higher speculation
-priority to a worse outlier. As speculation is costly, it is obviously advisable. Making
-sure of the split task and merge task not executing on irregular nodes is another
-important rule because of the impossible of exposing outlier with single task. On the
-other hand, the split and merge phases are always in the critical path of a job. The last
-one is speculation as soon as possible without irregular nodes. As the goal of speculation
-is earlier completion of job, speculation earlier and faster means better opportunity. The
+reasonable and have been verified in practice. The first rule is to assign a higher speculation
+priority to a worse outlier. As speculation is costly, this rule is obviously advisable. Making
+sure that the split task and merge task do not execute on irregular nodes is another
+important rule because we should not expose an outlier with a single task. On the
+other hand, the split and merge phases are always the critical stage of a job. The last
+one is to speculate as soon as possible without irregular nodes. The the goal of speculation
+is to complete the job early. Earlier and faster speculation means better opportunity. The
 pseudo code of speculation algorithm is shown in Fig. \ref{fig-spec-algo}.
 
 \begin{figure}
@@ -90,4 +90,4 @@ pseudo code of speculation algorithm is shown in Fig. \ref{fig-spec-algo}.
 \end{figure}
 
 In the next two sections, we will mainly illustrate the design of instrumentation based on
-function hits statistics and outliers clustering, two key points in $NO^2$ system. 
+function hits statistics and outliers clustering, which are the two key points in $NO^2$ system. 
