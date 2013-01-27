@@ -1,23 +1,21 @@
 \section{Evaluation}
 We deployed and evaluated $NO^2$ on both a local high end cluster and the cloud. Two
-representative applications, cap3 and ImageMagick, are chosen for testing. As we focus on
-reduction in completion time of jobs, the overheads of $NO^2$ must be measured at first.
-The computing resource usage is also considered and compared.
+representative applications, cap3 and ImageMagick, are chosen for testing. We focus on
+reduction in the completion time of jobs. Besides, the overheads and computing resource usage of $NO^2$ are also measured.
 
-We evaluated $NO^2$ with two typical applications. Cap3 is a well known Expressed Sequence
-Tag (EST) sequence assembly program in bioinformatics, and ImageMagick is a classic open
-source picture processing tool. In the cap3 case, there are many EST sequence files in
+The first application, Cap3, is a well known sequence assembly program in bioinformatics. There are many Expressed Sequence Tag (EST) sequence files in
 FASTA format. So the job is split naturally according to the FASTA files. With the job
-description engine of ProActive Scheduler and the shell script template we provided, it is
-simple to describe the job. Gaussian blur is a filter of ImageMagick, and it blurs an
+description engine and the shell script templates we provide, it is
+simple to describe a job. The second application, ImageMagick, is a classic open
+source picture processing tool. Gaussian blur is a filter of ImageMagick, and it blurs an
 image by a Gaussian function to reduce image noise. This effect is widely used in graphics
 software, also known as Gaussian smoothing. In this case, the job is rendering an image of
-a huge size with Gaussian blur. The image is cut into small pieces with ImageMagick first,
+a huge size with Gaussian blur. The image is cut into small pieces with ImageMagick and
 then filtered. All pieces are joined together at last.
 
 We use two metrics for evaluation: job completion time and computing resource usage. As a
-job consists of lots of tasks that are parallel processed, the job completion time refers
-to the duration between job submission and when all tasks of the job are finished
+job consists of lots of tasks that are processed in parallel, the job completion time refers
+to the duration between the job submission and when all tasks of the job are finished
 successfully.\footnote{For most of scientific computing jobs, there are several iterations
 in a workflow, and the successor jobs depend on the precursor ones. For instance, the
 precursor's output may be the the successor's input.} We run a job repeatedly for several
