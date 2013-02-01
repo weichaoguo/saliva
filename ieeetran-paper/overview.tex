@@ -37,10 +37,10 @@ command line tools provided by Condor.
 
 The instrumentation has two phases: function hits statistics and instrument with selected
 functions by the instrument points selector. For function hit statistics, another
-instrumentation is needed. As the statistics is offline, this instrumentation covers all
-functions in the binary code with no need to considering instrumentation overhead. The
-modified binary code runs with some input cases usually executed in realistic （看不懂丫……）and saves
-the statistics results in a file. With the statistics, the instrumentation for progress
+instrumentation is needed. As the statistics are offline, this instrumentation covers all
+functions in the binary code without considering instrumentation overhead. The
+modified binary code is executed with some input cases in production runs and
+the statistic results are saved in a file. With the statistics, the instrumentation for progress
 trace can be performed with the binary code in an appropriate granularity.
 
 The speculation algorithm of tasks scheduling for a job is straightforward with a few of

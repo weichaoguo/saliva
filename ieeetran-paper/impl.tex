@@ -9,7 +9,7 @@ DynInst \cite{Dyninst-Deconstruction} library. DynInst library is an Application
 Interface (API) \cite{dyninstapi} that permits the insertion of code into a static binary
 code or a running process. The goal of this API is to provide a machine independent
 interface to permit the creation of instrumentation tools and applications. And $NO^2$'s
-implementation of function hits statistics is based on an example of DynInst tools, called
+implementation of function hits statistics is based on an example of DynInst tools named
 CodeCoverage.
 
 Generally, there are three code snippets for the instrument points selector: the initial
@@ -21,7 +21,7 @@ to the file. All the code snippets are carefully assembled with DynIsnt API and
 manipulated with the original binary.
 
 For the purpose of excellent performance, the instrumenter completes the assembly of file
-operations using the low level system call \emph{open}, \emph{write}, and \emph{close} in
+operations through using the low level system call \emph{open}, \emph{write}, and \emph{close} in
 Linux Opreating System. The file for saving traces is created in the directory which is
 mounted as a RAM file system. The RAM file system uses memory as a disk in the Virtual
 File System (VFS) level supported by the Linux Operation System. It means that only
@@ -39,14 +39,14 @@ Java.
 Our task scheduling policy generator calls the outliers clustering module to establish
 outliers clustering with updated trace data. Then maintaining a blacklist of nodes, each
 node in the blacklist has a penalty value. The penalty could be eliminated if no further
-outliers found on a node, and it could be removed from the blacklist. In summary, the
+outliers are found on a node, and it could be removed from the blacklist. In summary, the
 blacklist is used for keeping the speculative tasks away from the most possible nodes that
 may produce outlier tasks. For each outlier, the policy generater creates an urgency job
 description that has a higher priority in the ProActive Scheduler. This urgency job has
 only one speculative task. Then all these urgency jobs are submitted to the ProActive
-Scheduler in a speculation priority order. The constraint that no speculation takes place
-on irregular nodes, can be achieved with a selection script and a claim of nodes selection
-in the job description. The default speculation interval is three seconds, means that the
+Scheduler by a speculation priority order. The constraint that no speculation takes place
+on irregular nodes can be achieved with a selection script and a claim of nodes selection
+in the job description. The default speculation interval is three seconds which means that the
 interactive with the job scheduler is moderate. And each update of traces information has
 little communication traffic, only several bytes indicating the number of tracepoints are
 transmitted. This lightweight implementation is acceptable to the job scheduler and the
@@ -55,7 +55,7 @@ impact of performance can be ignored roughly.
 We provide three extra shell scripts for splitting, wrapping native program and merging
 the results if needed. The shell scripts will be submitted and executed as normal tasks on
 job scheduler. They can be used immediately in ProActive Scheduler. But it doesn't mean
-any dependence, It is easy to export to other schedulers with tiny modification. Taking a
+any dependence. It is easy to export to other schedulers with tiny modification. Taking a
 picture rendering job for example, there may be three phases for this job: 1. splitting
 the image into small pieces, 2. rendering them in parallel, 3. merging the rendered parts.
 These three phases exactly match $NO^2$'s three shell script template : split script,
@@ -64,8 +64,8 @@ the split script, which may be optional for other jobs. The default procedure, c
 input files to the destinations, can also be modified if needed. In the operation script,
 the native program must be expressed as a command, a daemon process for traces
 transferring is also launched as default. When all parts of the results has been
-collected, a merge image command is executed in the merge script, optional for other jobs
+collected, a merge image command is executed in the merge script which is optional for other jobs
 too. As described above,  users have an extreme flexibility to make their native programs
-massive parallel. On the other hand it means $NO^2$ do not provide any file transfer or
-data placement service and so on, which have been provided by job schedulers or a
+massive parallel. It also means $NO^2$ does not provide any file transfer or
+data placement service and anything like this, which have been provided by job schedulers or a
 distributed file system of cluster itself.

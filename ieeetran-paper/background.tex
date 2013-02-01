@@ -15,36 +15,36 @@ Java environment. With a ProActive platform, the users tackle the acceleration a
 orchestration of all demanding applications easily \cite{ProActive}.
 
 To execute parallel tasks in distributed environments, such as clouds and clusters,
-requires a unified mechanism for scheduling tasks and managing resources, and the original
+requires a unified mechanism for scheduling tasks and managing resources. The original
 ProActive is equipped with a batch scheduler \cite{ProActiveScheduling}. The scheduler
-provides an abstraction of resources for users. It allows users to submit jobs, containing
-one or several tasks, and then to execute these tasks on available resources. It enables
+provides an abstraction of resources for users. It allows users to submit jobs which contain
+one or several tasks, and to execute these tasks on available resources afterwards. It enables
 several users to share the same resource pool and to tackle the problem involved with
-distributed environment, like failing tasks or resources. It also allows users to kill a
-specified task easily, and start the task again in another node.
+distributed environment, such as failing tasks or resources. It also allows users to kill a
+specified task easily, and to start the task again in another node.
 
 By default, the scheduler assigns tasks according to the default FIFO (First In First Out)
-priority policy. If a task needs to be scheduled quickly, the user can increase its
-priority, or change such basic policy. In ProActive, to create and add a new scheduling
+priority policy. The user can increase the task's priority according to its emergency,
+or can change the basic policy. In ProActive, to create and add a new scheduling
 policy is very simple. The users only need to implement the policy interface, and execute
-the scheduler with the new policy as argument.
+the scheduler with a new policy.
 
 The ProActive Scheduler \cite{pascheduling} is connected to a Resource Manager \cite{parm}
-providing the resource abstraction. The Resource Manager is a component for resource
+which provides the resource abstraction. The Resource Manager is a component for resource
 aggregation across the network. It sends compute units represented by ProActive nodes
-(Java Virtual Machines running the ProActive Runtime)   to the scheduler which manages the
-task workflow and distributed tasks on accessible resources. According to the deployment,
+(Java Virtual Machines runs the ProActive Runtime) to the scheduler which manages the
+task workflow and distributes tasks to accessible resources. According to the deployment,
 it can retrieve the computing nodes using different standard such as SSH, LSF, OAR, gLite,
 EC2, etc.
 
-Including Scheduler, Resource Manager and other components, the ProActive platform can
-thus easily run on a cluster, a grid or a cloud or any mixture of them without
-modification, and get better performance for high performance and distributed computing.
+With Scheduler, Resource Manager and other components, the ProActive platform can
+ easily run on a cluster, a grid or a cloud or any mixture of them without
+modification. High performance and distributed computing could perform better. 
 
 \subsection{Outliers}
 
 Many previous works have identified outliers as a critical performance killer in
-heterogeneous clouds. Even in high end clusters, outliers are still an issue. Take our
+heterogeneous clouds. Even in high end clusters, outliers are an inconvenient issue. Take our
 experimental cluster for example. We share this large local cluster, which has 8800 CPU
 cores over 740 server nodes, with many other institutes and researchers. As the local
 cluster is mainly build for scientific computing, it only provides a Load Shared Facility
@@ -52,13 +52,13 @@ cluster is mainly build for scientific computing, it only provides a Load Shared
 similar to what happens in the cloud, where many virtual machines share some physical
 servers.
 
-Additionally, we have another small cluster that is dedicated to our experiment. For
-better utilize both parts of computational resources, we deployed a uniform ProActive
+Additionally, we have another small cluster that is dedicated to our experiment. To
+better utilize all parts of computational resources, we deployed a uniform ProActive
 Scheduling System to administrate all available resources. Based on the ProActive
 platform, we successfully extend the flexibility of using large-scale clusters. In such a
 heterogeneous environment, outliers often emerge.
 
 The traditional ProActive global scheduler does not support collaboration and
 communication with the local job scheduler on a cluster, so that too much CPU contention
-on some node leads to outliers. The outliers prolong the completion time of job and harm
-the performance of ProActive seriously.
+on some node leads to outliers. The outliers prolong the completion time of job and seriously harm
+the performance of ProActive.

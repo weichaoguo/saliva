@@ -1,7 +1,7 @@
 \section{Evaluation}
 We deployed and evaluated $NO^2$ on both a local high end cluster and the cloud. Two
-representative applications, cap3 and ImageMagick, are chosen for testing. We focus on
-reduction in the completion time of jobs. Besides, the overheads and computing resource usage of $NO^2$ are also measured.
+representative applications, cap3 and ImageMagick, are chosen for being tested. We focus on
+reducting the completion time of jobs. Besides, the overheads and computing resource usage of $NO^2$ are also measured.
 
 The first application, Cap3, is a well known sequence assembly program in bioinformatics. 
 There are many Expressed Sequence Tag (EST) sequence files in
@@ -12,15 +12,15 @@ source picture processing tool. Gaussian blur is a filter of ImageMagick, and it
 image by a Gaussian function to reduce image noise. This effect is widely used in graphics
 software, also known as Gaussian smoothing. In this case, the job is rendering an image of
 a huge size with Gaussian blur. The image is cut into small pieces with ImageMagick and
-then filtered. All pieces are joined together at last.
+then is filtered. All pieces are joined together in the end.
 
 We use two metrics for evaluation: job completion time and computing resource usage. As a
-job consists of lots of tasks that are processed in parallel, the job completion time refers
-to the duration between the job submission and when all tasks of the job are finished
-successfully.\footnote{For most of scientific computing jobs, there are several iterations
-in a workflow, and the successor jobs depend on the precursor ones. For instance, the
-precursor's output may be the the successor's input.} We run a job repeatedly for several
-times and use the average job completion time as the system metric. Considering
+job consists of lots of tasks that are processed in parallel, we define the job completion time
+as the duration between the submission of the job and the finish of all tasks.
+\footnote{ There are several iterations in a workflow for most of the scientific computing jobs, 
+ and the successor jobs depend on the precursor ones. For instance, the
+precursor's output may be the the successor's input.} We run a job repeatedly
+and use the average job completion time as the system metric. Considering
 speculative executions call for extra computing resource, we also measure the computing
 resource usage with CPU utilization, monitored by the ProActive Resource Manager. Given
 the baseline and $NO^2$ CPU utilization, the cost of speculative executions can be
@@ -55,15 +55,15 @@ there are a few outliers, and they appear on random server nodes and at differen
 \label{figure:yaoutlier}
 \end{figure}
 
-We pick up two pieces of this experiment, and make two scatter plots Fig.
+We pick up two trials in this experiment, and make two scatter plots respectively as Fig.
 \ref{figure:outlier} and Fig. \ref{figure:yaoutlier}. As shown in Fig.
-\ref{figure:yaoutlier}, there are much more outliers than Fig. \ref{figure:outlier}, and
-outliers need nearly twice time to complete the same task. As one server node contains
-several CPU cores, the physical outliers is not as much as outliers of CPU cores. With
-this naive inspection, we can conclude that even in high end clusters, there are a small
-number of outliers in some server nodes and some period of day due to computing resource
-contention commonly. For a detail understanding about the outliers in the local cluster,
-we last this experiment each hour several tens of times for a whole day. Fig.
+\ref{figure:yaoutlier}, there are many more outliers than Fig. \ref{figure:outlier}, and
+outliers need nearly twice the time to complete the same task. As one server node contains
+several CPU cores, the physical outliers are not as many as outliers of CPU cores. With
+this simple observation, we can conclude that even in high end clusters, there are a certain
+number of outliers in some server nodes and during some periods of day, due to common computing resource
+contention. For a further understanding about the outliers in the local cluster,
+we loop this experiment several times to last a whole day. Fig.
 \ref{figure:outlier_stats} has shown a rough statistics for the probability of outlier
 each hour in one day.
 
@@ -75,7 +75,7 @@ each hour in one day.
 \end{figure}
 
 As this experiment may produce some computing resource contentions and the data is just in
-one day, the statistics is not strict. For a non-quantitative study with the outliers, we
+one day, the statistics is not accurate. For a non-quantitative study with the outliers, we
 simply make an assumption that a CPU core of the cluster happens to be an outlier is a
 random event, and the events are independent. As jobs often need lots of CPU cores to run
 massive parallel tasks, the probability $P$ of a job running $N$ parallel tasks without
@@ -95,16 +95,16 @@ outlier-aware tasks scheduling is extremely needed for a job with massive parall
 
 \subsubsection{Overhead and Accuracy of Instrumentation}
 
-Binary instrumentation often cost a very high overhead, which may tens of times slower
-than no instrumentation executions. Although static binary instrumentation is more
-efficient than dynamic ones, a few percentage to tens of percentage overhead is needed for
-tracing all function entries naively, shown in the Fig. \ref{figure:overhead_cap3} and
-Fig. \ref{figure:overhead_gaussianblur}, cannot be put up with production clusters.
+Binary instrumentation often costs a very high overhead, which may be tens of times slower
+than no instrumentation executions. Although the static binary instrumentation is more
+efficient than the dynamic, usually tens of percent points of overhead is needed if
+all function entries are traced, as shown in the Fig. \ref{figure:overhead_cap3} and
+Fig. \ref{figure:overhead_gaussianblur}. Such high overhead prevents it from being used in production clusters.
 
 To evaluate our progress trace approach, we run the cap3 and gaussianblur from ImageMagick
-in one server node of the cluster. Each application is tested tens of times with different
+in one server node of the cluster. Each application is tested repeatedly with different
 inputs. Fig. \ref{figure:overhead_cap3} and Fig. \ref{figure:overhead_gaussianblur} shows
-the results of this experiment, on average, instrumentation with all function entries
+the results of this experiment. On average, instrumentation with all function entries
 costs 8\% - 11\% extra time to complete the execution, while instrumentation based on
 function hits statistics in $NO^2$ needs only 0.03\% - 0.1\% extra time costs.
 
@@ -122,9 +122,9 @@ function hits statistics in $NO^2$ needs only 0.03\% - 0.1\% extra time costs.
 \label{figure:overhead_gaussianblur}
 \end{figure}
 
-Such low overhead make $NO^2$ is enough efficient to deploy on a production system. But
-the tracpoints are uneven, means the instrumentation may sometimes miss parts of progress
-the processes have made and caused progress report inaccurate. So we make an inspection
+Such low overhead make $NO^2$ efficient enough to deploy on a production system. But
+the tracpoints are uneven, which means the instrumentation may sometimes miss parts of progress and
+the processes have caused progress to report inaccurate. So we make an inspection
 with some trace cases of processes of Cap3, Gaussianblur and a combined image rendering
 all from ImageMagick. We noticed that the progress trace with instrumentations with all
 function entries is a little smoother than those with our instrumentation approach, such
@@ -139,8 +139,8 @@ shows in Fig. \ref{figure:tracepoints}.
 \label{figure:tracepoints}
 \end{figure}
 
-Since each execution is arbitrary with different inputs and conditions completely, every
-function may last short or long time slots in different executions. Unfortunately, we can
+Since each execution is completely arbitrary with different inputs and conditions, every
+function may last short or long period of time in different executions. Unfortunately, we can
 not make an inference of absolute execution progress with traces of instrumentation all
 function entries. Even instrumentation with all basic binary blocks, there is no absolute
 accuracy. A reasonable approach may be a customized instrumentation in kernel level,
@@ -167,12 +167,12 @@ Reduction in job completion time is a critical metric. We submitted Cap3 and Gau
 jobs fifty times each to ProActive Scheduler with and without $NO^2$. Fig.
 \ref{figure:completiontime_cap3} and Fig. \ref{figure:completiontime_gaussianblur} show
 that job completion time has been improved by roughly 25\% on average. The histogram plots
-the best, worst, average reduction of Cap3 jobs and Gaussian Blur jobs. In the worst case
+the best, the worst, and the average reduction of Cap3 jobs and Gaussian Blur jobs. In the worst case
 of Cap3, there is a little increment of job completion with $NO^2$, caused by a worst
 choose in speculative execution. On average, the reduction of job completion time with
-$NO^2$ is significant. Without $NO^2$, causing by the hinder of outliers, the completion
+$NO^2$ is significant. Without $NO^2$, caused by the hinder of outliers, the completion
 time of jobs has a big deviation with the best case. However with $NO^2$, the completion
-time of jobs declined towards to the best case. These two experiments show that $NO^2$
+time of jobs is reduced to the best case. These two experiments show that $NO^2$
 mitigates the outliers efficiently.
 
 \begin{figure}
@@ -189,8 +189,8 @@ mitigates the outliers efficiently.
 \label{figure:completiontime_gaussianblur}
 \end{figure}
 
-$NO^2$ can bring benefits to job schedulers with improvement of job completion time. At
-the same time, it needs some amount of computing resource in addition. In aforementioned
+$NO^2$ can benefits job schedulers with reduction of job completion time. At
+the same time, it needs some amount of computing resource in addition. In the aforementioned
 test, we collected the statistics data of CPU usage from ProActive Resource Manager and
 plotted a histogram as Fig. \ref{figure:resourceusage}.
 
@@ -203,10 +203,10 @@ plotted a histogram as Fig. \ref{figure:resourceusage}.
 
 As shown in Fig. \ref{figure:resourceusage}, 20\% - 30\% more computing resource has been
 used by $NO^2$ for speculative executions. This makes sense for some local clusters, which
-has low utilization in most of the time of day. $NO^2$ helps them scheduling jobs more
+has low utilization in most of the time of day. $NO^2$ helps them to scheduel jobs more
 efficient, and reduces the server idle time. But for a busy cluster or cloud, where
 computing resource is not free, we expect speculative executions use resource as little as
-possible. We will analysis how to reduce waste of computing resource with little loss of
+possible. We will analyze how to reduce waste of computing resource with little loss of
 reduction of the job completion time later, and for some error-prone environment $NO^2$
 can even use less computing resource with less failure executions.
 
@@ -240,8 +240,8 @@ shown in Fig. \ref{figure:outlier_cloud}.
 
 We submitted cap3 jobs in the same scale as local, and plot the histogram Fig.
 \ref{figure:completiontime_cap3_cloud}. As computing resources is not sufficient in the
-cloud, we also try an aborting strategy, also known as 'kill then restart' which is less
-computing resources cost than speculation. We will discuss this strategy in the next
+cloud, we also try an aborting strategy, also known as 'kill then restart' which costs less
+computing resources than speculation. We will discuss this strategy in the next
 section.
 
 \begin{figure}
@@ -255,7 +255,7 @@ There is roughly 15\% - 22\% job completion time reduction on average shown in F
 \ref{figure:completiontime_cap3_cloud}. At the same time, the resource usage with
 speculation strategy is 100\%, which means there may be more speculations not performed
 for any sufficient computing resources and other jobs may be blocked with the same reason.
-The aborting strategy is more economic, only cost a 4\% - 5\% additional computing
+The aborting strategy is more economic, which only costs a 4\% - 5\% additional computing
 resource.
 
 \begin{figure}
@@ -267,14 +267,14 @@ resource.
 
 \section{discussion}
 
-We will make a discussion about threshold tuning in $NO^2$ system in this section and take
+We will make a discussion on the threshold tuning in $NO^2$ system in this section and take
 one step further with $NO^2$ system by evaluation a different strategy to mitigate
 outliers. These are two main pieces of experience we gain from varieties of practice.
 
 \subsection{Threshold Tuning}
 
-How slow will outliers mostly be? Or when how much one process is behind the majority, it
-must be an outlier? The threshold of outlier clusterings is critical for $NO^2$. In our
+How slow will outliers mostly be? Or to what extent the process is lagged behind the majority when we could
+judge it as an outlier? The threshold of outlier clusterings is critical for $NO^2$. In our
 outlier clustering approach, we use a naive one-degree kmeans clustering algorithm where
 $K = 2$, and we use the normalized variation of the centers of clusterings to judge if one
 of them contains outliers. When the normalized variation is larger than a dynamic
@@ -282,8 +282,8 @@ threshold $T_d$, $NO^2$ realizes outliers exist. But the dynamic threshold $T_d$
 on the original threshold $T$ we determined a little arbitrarily. So a fine-grained tuning
 with the threshold $T$ is an indispensable procedure for $NO^2$ system.
 
-We use three fix JVM nodes running a shell script costing lots of CPU to act as outliers.
-And make sure other nodes are running normally, if there are some unexpected outliers, we
+We use three fix JVM nodes running a shell script and costing lots of CPU to act as outliers.
+In order to make sure other nodes are running normally, if there are some unexpected outliers, we
 just drop the execution result. In this way, the other variation is limited. Tuning the
 threshold $T$ from low to high, we run a Cap3 job which was split into 100 parallel tasks
 to study the sensitivity of threshold $T$. In Fig. \ref{figure:thresholdtuning}, as
@@ -300,15 +300,15 @@ little outliers and becomes lag to response.
 
 A low threshold may be false positive, and cause a large amount of speculative executions.
 This has been shown in Fig.  \ref{figure:thresholdtuning}, which means a low success rate
-of speculations and wasting a lot of computing resource. With an optimized threshold, our
+of speculations and wastes a lot of computing resource. With an optimized threshold, our
 outliers clustering approach can mitigate the false positive risks and keep sensitive with
 outliers, this is critical for $NO^2$.
 
 \subsection{Aborting Strategy}
 
-Considering the idle computing resources may be not sufficient as much as the speculations
-need, such as in the cloud. We try an aborting strategy which is a little different from
-speculation. This strategy is more aggressive and adventurous. Rather than speculation, it
+Considering the idle computing resources may be not sufficient to meet the speculations'
+need, such as in the cloud. We try an aborting strategy which is a bit different from
+speculation. This strategy is more aggressive and adventurous. Rather than speculates, it
 immediately aborts the potential outliers and restarts these tasks on another nodes not in
 the blacklist. This extreme scheduling decision cuts lots of computing resources usage
 which is needed for speculation, meanwhile may slow down the completion time of a job.
@@ -321,11 +321,11 @@ equipmented with aborting scheduling strategy in the aforementioned local cluste
 \ref{figure:abort_completiontime_gaussianblur} show that aborting strategy has a larger
 variation than the speculation one in job completion time. In the worst case of Cap3 and
 Gaussian Blur, aborting strategy is obviously slower than the case without $NO^2$ and with
-$NO^2$'s speculation strategy. On average of Cap3 case, aborting strategy is similar with
-speculation strategy, about 25\% reduction of job completion time. In contract, aborting
+$NO^2$'s speculation strategy. On average of Cap3 case, similar with
+speculation strategy, aborting strategy reduces 25\% of job completion time. In contract, aborting
 strategy has a slowdown in the Gaussian Blur case. There is nearly 10\% more time cost
 than the speculation strategy. These two experiments show that aborting strategy can
-reduce the completion time of jobs, but a little slower than the speculation strategy.
+reduce the completion time of jobs, but is a little slower than the speculation strategy.
 
 \begin{figure}
 \centering
@@ -341,7 +341,7 @@ reduce the completion time of jobs, but a little slower than the speculation str
 \label{figure:abort_completiontime_gaussianblur}
 \end{figure}
 
-With a little performance degraded, the aborting strategy cut down lots of CPU resource
+With a little performance degraded, the aborting strategy cuts down lots of CPU resource
 usage. The same as last experiment, we collected the statistics data of CPU usage from
 ProActive Resource Manager and plotted a histogram as Fig.
 \ref{figure:abort_resourceusage}.
@@ -355,5 +355,5 @@ ProActive Resource Manager and plotted a histogram as Fig.
 
 As shown in Fig. \ref{figure:abort_resourceusage}, about 20\% CPU usage reduction
 obtained. With the aborting strategy, the waste of CPU resource is bounded about 10\%,
-Which verified the aborting strategy is valuable. This has also comfirmed by the
+which verified that the aborting strategy is valuable. This has also comfirmed by the
 experiment in the cloud shown in Fig. \ref{figure:resourceusage_cloud}. 

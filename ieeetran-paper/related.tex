@@ -36,18 +36,18 @@ Cooperating With ProActive Resource Manager \cite{parm} , it can be used with a 
 computing resources. HTCondor and ProActive are widely deployed and used in grids and
 clusters. Our $NO^2$ system is implemented to interact with ProActive Scheduler's
 interfaces. Our work mainly considered the outliers problem of massive parallel executions
-and help Scheduler with reducing the job completion time.
+and helped Scheduler with reducing the job completion time.
 
 Speculative execution is a shared idea from distributed file systems
 \cite{Nightingale:2006:SED:1189256.1189258} and some other work
-\cite{Su:2007:AIC:1294261.1294284} . Unlike these literatures are focused on guessing
-along decision branches treating parallel processes as a black box, our work launches
+\cite{Su:2007:AIC:1294261.1294284} . Unlike these literatures which are focused on guessing
+along decision branches and treating parallel processes as a black box, our work launches
 speculations in a more reasonable situation. With instrumentation, we change the view to a
 white box.
 
 Using instrumentation for lots of performance analysis, system modeling and debugging
-requirements is attractive. Although there are many open research problems in developing
-the instrument tools, it is still the most reasonable way to understand complex system
+requirements is attractive. Although still there are many open research problems in developing
+the instrument tools, it is the most reasonable way to understand complex system
 behavior. Magpie \cite{Barham:2004:UMR:1251254.1251272} is a tool chain for automatically
 modeling workload of cluster and predicting performance with fine-grained instrumentation
 in kernel, middleware, and application components. DTrace
@@ -55,10 +55,10 @@ in kernel, middleware, and application components. DTrace
 Operating System, providing an option for lightweight dynamic instrumentation in kernel.
 Similar approaches on different operating systems include the Linux Trace Toolkit (LTT)
 \cite{Yaghmour:2000:MCS:1267724.1267726} and Event Tracing for Windows (ETW) \cite{etw}.
-The PMaC Prediction Framework \cite{Carrington:2006:PPF:1134241.1708446} is an
-implementation of an automated prediction model that takes as parameters attributes of
-application software, input data, and target machine hardware (and possibly other factors)
-and computes, as output, expected performance. It is a generalized framework with our
+The PMaC Prediction Framework \cite{Carrington:2006:PPF:1134241.1708446} implements
+an automated prediction model that takes into account attributes of
+applications, input data, and target machine hardware (and other factors). The model
+computes expected performance as output. It is a generalized framework with our
 requirements. In our work, we use instrumentation for a simple clear goal. With a
 specialized environment, our instrumentation is easier to implementation than PMaC. As far
 as we know, our work is the first case introducing an instrumentation approach to the
@@ -74,8 +74,8 @@ extended the programming model of Map-Reduce. J. Ekanayake et al.
 \cite{Ekanayake:2011:CTB:1990761.1990858} also make a study on comparison and evaluation
 of using these technologies in scientific computing. There are various of strategies to
 choose which tasks to duplicate. Hadoop uses slots that free up to duplicate any task that
-has read less data than the others after all tasks have started. Dryad duplicates those
-that have been running for longer than the 75 percentage of task durations. LATE
+has read less data than the others after all tasks have been started. Dryad duplicates those
+that have been running for longer than 75 percentage of task durations. LATE
 \cite{Zaharia:2008:IMP:1855741.1855744} designed a new scheduling algorithm to robust
 Hadoop with heterogeneity. With cause-aware and resource-aware, Mantri
 \cite{Ananthanarayanan:2010:ROM:1924943.1924962} detects and acts on outliers early in
@@ -83,6 +83,6 @@ their lifetime. All these prior scheduling strategies motivate our work with the
 speculation idea. As Map-Reduce is designed for data-intensive computing, these works
 naturally predict the progress of executions with data processing progress. But with
 computing-intensive executions, this implicit experience has been broken. Our work fills
-up this gap between computing-intensive and data-intensive task.
+up this gap between computing-intensive task and data-intensive task.
 
 
