@@ -1,16 +1,15 @@
-\section{Instrumentation}
+\section{Instrumentation} \label{sec-instrument}
 
 There are two main challenges on tracing the progress of a process with binary instrumentation
 in production systems. One challenge is performance. Even a lightweight static binary
 instrumentation would increases execution time by tens of percentages. The other one is
-progress accuracy. The ideal progress tracing rate is uniform along the whole execution, which
+progress accuracy. The ideal progress tracepoints are uniformly distributed along the whole execution, which
 means that it can estimate accurately how much the task has been done and how long it
 lasts. Take downloading a file for example. If the downloading progress bar shows a
 50\% completion after 1 minute, it is clear that half of the task has been done and it may
 last another 1 minute with a stable network connection. But for a compute-intensive
 process, we only know that the process has met which tracepoint we instrumented. We can
-not know the actions of the process that have no instrumented tracepoints, and the same
-to the subsequent actions of the process. In a word, it is hard to estimate the progress of a compute-intensive
+not know the actions of the process that have no instrumented tracepoints, and neither the subsequent actions of the process. In a word, it is hard to estimate the progress of a compute-intensive
 process that is not related to data I/O.
 
 We primarily concern the performance of tracing in $NO^2$'s instrumentation, and 
@@ -53,11 +52,11 @@ instrument points. For the purpose of progress tracing, an idealistic idea is to
 each entry and exit point with all functions and basic blocks. Apparently, the overhead is
 proportional to the hit rates. So with a few more coarse-grained instrumentations, we
 can skip the minority of functions and reduce the majority of overheads. With the wish of minimum
-overheads, we proposed a hit-statistics based function instrument
-approach. This goal has been achieved as the evaluation section shows.
+overheads, we propose a hit-statistics-based function instrument
+approach. This goal has been achieved as the evaluation section (Section \ref{sec-eval}) will show.
 
 The instrument point selector is designed to record each function call and maintain the
-function hits statistics which are saved in a key-value pattern: function name and number of
+function hit statistics which are saved in a key-value pattern: function name and number of
 calls. After several runs, different AST levels of functions can be distinguished
 according to the function hits. The instrumenter first loads the statistics data and
 calculates the mean of hit numbers of all functions. Then it inserts a code snippet at
@@ -67,29 +66,28 @@ threshold. With the automatic selection, the instrumenter can instrument the
 binary codes in an appropriate granularity. The instrumented binary is written back as
 a seperate file and sent to the ProActive scheduler to execute.
 
-\section{Outlier Clustering}
+\section{Outlier Clustering} \label{sec-outlier}
 
 For speculative executions, the first task of $NO^2$ is finding out the outliers.
 With the traces returned by the instrumented processes, $NO^2$ uses an approach based on
-Kmeans Clustering algorithm, which is commonly used in statistics analysis and data
+K-means Clustering algorithm, which is commonly used in statistics analysis and data
 mining, to hunt the outliers. With outliers exposed, $NO^2$ performs speculative
-executions which needs to interact with the job scheduler.
+execution or aborting which needs to interact with the job scheduler.
 
 There are several assumptions for the outliers clustering.
 
 \begin{itemize}
 \item Outliers is the minority of the massive parallel processes.
-\item The tasks are split with a small amount of imbalance.
-\item The server nodes of cluster becomes abnormal indeterminately and may return to
+\item A job is split into tasks with only slight imbalance.
+\item The server nodes of a cluster become abnormal in an indeterministic manner and may return to
 normal after a while.
 \end{itemize}
 
 We novelly select two properties of each process's traces to make outliers exposed, the
-number of tracepoints met $N$ and the increment of tracepoints in one interval
-$I$. Figure \ref{figure:executionsexample} shows a possible example of two processes of
-the same binary code with same input at runtime. Ideally they should draw the same line,
-but process B is actually slower than process A. It is similar to the accuracy test of
-instrumentation in the evaluation section.
+number of triggered tracepoints $N$ and the increment of tracepoints in an interval
+$I$. Figure \ref{figure:executionsexample} shows an example of two processes of
+the same binary code with the same input at runtime. Ideally they should draw two very similar lines,
+but process B is actually slower than process A.
 
 \begin{figure}
 \centering
@@ -98,34 +96,34 @@ instrumentation in the evaluation section.
 \label{figure:executionsexample}
 \end{figure}
 
-A idealistic idea for exposing outliers is generating two clusterings using a one-degree Kmeans
-Clustering algorithm with all processes' number of tracepoints. And if the normalized
-variation of the two clusterings' means is larger than a threshold $T$, the clustering of
-processes with a mean value of $N$ less than the other one will be judged as outliers.
+A straightforward idea for exposing outliers is generating two classes using a one-degree K-means
+Clustering algorithm with all processes' number of tracepoints. If the normalized
+variation of the two classes' means is larger than a threshold $T$, the class of
+processes with a mean value $N$ less than the other class will be judged as outliers.
 
-But the number of tracepoints is increased unevenly. We have mentioned this dilemma at the
-instrumentation section. Four differences of two processes' number of tracepoints has been
+But the number of tracepoints grows unevenly along the task execution.
+As illustrated in Fig. \ref{figure:executionsexample}, four differences of tracepoint numbers of two processes have been
 marked as $d_1, d_2, d_3, d_4$ at four different time points. Although process B is always
 0.8X slower than process A, the difference of process A and process B is not increased
-along the whole time line. An obvious case is $d_1 > d_2$, this may lead to the naive
-kmeans clustering approach missing process B when clustering outliers. Another type of
-mistake is some conditions just as $d_3 < d_4$. Process B may be just a little slower than
-process A, but it is judged as an outlier in the naive kmeans clustering approach. So there no
-fixed threshold $T$ which is appropriate for judging the outliers with the naive kmeans
+along the whole time line. An obvious case is $d_1 > d_2$, which may mislead the naive
+k-means clustering approach to missing process B when clustering outliers. Another type of
+mistake may be made in conditions just as $d_3 < d_4$. Process B may be just a little slower than
+process A, but it is judged as an outlier in the naive k-means clustering approach. So there no
+fixed threshold $T$ which is appropriate for judging the outliers with the naive k-means
 clustering approach.
 
-To eliminate the mistake caused by false positives and false negatives, an improved approach
-has been proposed in $NO^2$. We proposed a new dynamic threshold $T_d$, which is
-determined by the threshold $T$, the mean of all processes' tracepoints increment $I_m$
-and the $i$th process's tracepoints increment $I_i$.
+To eliminate the false positive and false negative mistakes, an improved approach
+has been proposed in $NO^2$. We employ a new dynamic threshold $T_d$, which is
+determined by the threshold $T$, the mean of all processes' tracepoint increment $I_m$
+and the $i$th process's tracepoint increment $I_i$.
 
 $$T_d = T \cdot (I_m / I_i)$$
 
-As one of the assumptions is that outliers is the minority, the mean of the increment of
+As one of the assumptions is that outliers are the minority, the mean of the increment of
 tracepoints of all processes $I_m$ is nearly the same to the majority. When the variance
-of the means of clusterings decreased exceptionally like the case $d_1 > d_2$, the dynamic
-threshold $T_d$ decreased correspondingly. When the variance of the means of clusterings
-increased exceptionally like the case $d_3 < d_4$, the corresponding increase of $T_d$
+of the means of clusterings decreases exceptionally like in the case $d_1 > d_2$, the dynamic
+threshold $T_d$ decreases correspondingly. When the variance of the means of clusterings
+increases exceptionally like in the case $d_3 < d_4$, the corresponding increase of $T_d$
 comes along. So dynamic threshold $T_d$ can generally be adaptive to the uneven increase of the number
 of tracepoints. With this improved approach for outliers clustering, $NO^2$
-can find out most outliers whereas introduces few false positives. 
+can find out most outliers whereas introduce few false positives. 
