@@ -10,7 +10,7 @@ open-source solution for acceleration of applications. It is seamlessly integrat
 the management of high-performance clouds, and simplifies the parallel program development
 in cluster, grid and cloud computing environment. ProActive is completely based on Java
 development for parallel distributed computing, and does not make any modification on Java
-Virtual Machine (JVM), so it can run on any operating system which supports a standard
+Virtual Machine (JVM), so it can run on any operating system that supports a standard
 Java environment. With a ProActive platform, the users tackle the acceleration and
 orchestration of all demanding applications easily \cite{ProActive}.
 
@@ -24,7 +24,7 @@ distributed environment, such as failing tasks or resources. It also allows user
 specified task easily, and to start the task again in another node.
 
 By default, the scheduler assigns tasks according to the default FIFO (First In First Out)
-priority policy. The user can increase the task's priority according to its emergency,
+priority policy. The users can increase the task's priority according to its emergency,
 or can change the basic policy. In ProActive, to create and add a new scheduling
 policy is very simple. The users only need to implement the policy interface, and execute
 the scheduler with a new policy.
@@ -34,8 +34,8 @@ which provides the resource abstraction. The Resource Manager is a component for
 aggregation across the network. It sends compute units represented by ProActive nodes
 (Java Virtual Machines runs the ProActive Runtime) to the scheduler which manages the
 task workflow and distributes tasks to accessible resources. According to the deployment,
-it can retrieve the computing nodes using different standard such as SSH, LSF, OAR, gLite,
-EC2, etc.
+it can retrieve computing nodes using different standard such as SSH, LSF, OAR, gLite,
+EC2.
 
 With Scheduler, Resource Manager and other components, the ProActive platform can
  easily run on a cluster, a grid or a cloud or any mixture of them without
@@ -54,8 +54,7 @@ servers.
 
 Additionally, we have another small cluster that is dedicated to our experiment. To
 better utilize all parts of computational resources, we deployed a uniform ProActive
-Scheduling System to administrate all available resources. Based on the ProActive
-platform, we successfully extend the flexibility of using large-scale clusters. In such a
+Scheduling System to administrate all available resources. In such a
 heterogeneous environment, outliers often emerge.
 
 The traditional ProActive global scheduler does not support collaboration and

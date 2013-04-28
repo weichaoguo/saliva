@@ -9,16 +9,18 @@ Whereas, our $NO^2$ system can continuously speed up parallel processing for mas
 compute-intensive tasks in clusters and clouds.
 
 $NO^2$ contains two main components which are the instrumenter and tasks scheduling policy
-generater. The instrumenter's perfect partner- the instrument points selector- 
+generater. The instrumenter's perfect partner the instrument points selector
 collects the statistics of function hits in a variety of executions and selects some
-function entries for a appropriate instrumentation granularity. Though the instrumenter
-can finish the instrument task of tracing progress by itself, an additional overhead such
+function entries for an appropriate instrumentation granularity. The instrumenter
+can finish the instrument task of tracing all function entries by itself, additional overhead such
 as some percentage of execution time is unavoidable. This is unacceptable in
-production system. But with the instrument points selector's cooperation, overheads can be
+production system. With the instrument points selector's cooperation, overhead can be
 reduced to a low level, or even can be negligible. Details will be shown in the evaluation section. The
 tasks scheduling policy generater is supported by the outliers clustering. With the
 outliers information, an optimized tasks scheduling policy can be generated for the job
-running on cluster.
+running on cluster. As shown in Fig.\ref{figure:no2arch}, users submit jobs with a job description which
+configured for using instrumented binary code. The running instumented processes provide traces for
+clustering outliers.
 
 \begin{figure}
 \centering
@@ -27,10 +29,10 @@ running on cluster.
 \label{figure:no2arch}
 \end{figure}
 
-We carefully designed $NO^2$ to assure its independence with job scheduler which
+We carefully designed $NO^2$ to assure its independence with the job scheduler that
 facilitates users' adaptation to different job schedulers. As Fig.
-\ref{figure:no2arch} shows, the only interaction is the interface between $NO^2$ and
-ProActive Scheduler. The interface is for obtaining task status information of a job and
+\ref{figure:no2arch} shows, the only coupling between $NO^2$ and
+ProActive Scheduler is interfaces for obtaining task status information of a job and
 requesting to kill or start a task. These abilities can be easily satisfied by any job
 scheduler's control interface, such as control script provided by ProActive Scheduler or
 command line tools provided by Condor.
@@ -50,7 +52,7 @@ priority to a worse outlier. As speculation is costly, this rule is obviously ad
 sure that the split task and merge task do not execute on irregular nodes is another
 important rule because we should not expose an outlier with a single task. On the
 other hand, the split and merge phases are always the critical stage of a job. The last
-one is to speculate as soon as possible without irregular nodes. The the goal of speculation
+one is to speculate as soon as possible without irregular nodes. The goal of speculation
 is to complete the job early. Earlier and faster speculation means better opportunity. The
 pseudo code of speculation algorithm is shown in Fig. \ref{fig-spec-algo}.
 
@@ -90,4 +92,4 @@ pseudo code of speculation algorithm is shown in Fig. \ref{fig-spec-algo}.
 \end{figure}
 
 In the next two sections, we will mainly illustrate the design of instrumentation based on
-function hits statistics and outliers clustering, which are the two key points in $NO^2$ system. 
+function hits statistics and outliers clustering, which are the two key points in $NO^2$. 

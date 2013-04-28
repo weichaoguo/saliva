@@ -9,7 +9,7 @@ lasts. Take downloading a file for example. If the downloading progress bar show
 50\% completion after 1 minute, it is clear that half of the task has been done and it may
 last another 1 minute with a stable network connection. But for a compute-intensive
 process, we only know that the process has met which tracepoint we instrumented. We can
-not know the actions of the process that have no instrumented tracepoints, and neither the subsequent actions of the process. In a word, it is hard to estimate the progress of a compute-intensive
+not know the actions of the process that have no instrumented tracepoints, and neither the subsequent actions of the process. In other words, it is hard to estimate the progress of a compute-intensive
 process that is not related to data I/O.
 
 We primarily concern the performance of tracing in $NO^2$'s instrumentation, and 
@@ -96,7 +96,7 @@ but process B is actually slower than process A.
 \label{figure:executionsexample}
 \end{figure}
 
-A straightforward idea for exposing outliers is generating two classes using a one-degree K-means
+A straightforward idea for exposing outliers is to generate two classes using a one-degree K-means
 Clustering algorithm with all processes' number of tracepoints. If the normalized
 variation of the two classes' means is larger than a threshold $T$, the class of
 processes with a mean value $N$ less than the other class will be judged as outliers.
@@ -108,7 +108,7 @@ marked as $d_1, d_2, d_3, d_4$ at four different time points. Although process B
 along the whole time line. An obvious case is $d_1 > d_2$, which may mislead the naive
 k-means clustering approach to missing process B when clustering outliers. Another type of
 mistake may be made in conditions just as $d_3 < d_4$. Process B may be just a little slower than
-process A, but it is judged as an outlier in the naive k-means clustering approach. So there no
+process A, but it is judged as an outlier in the naive k-means clustering approach. So there is no
 fixed threshold $T$ which is appropriate for judging the outliers with the naive k-means
 clustering approach.
 

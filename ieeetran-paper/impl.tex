@@ -15,10 +15,10 @@ CodeCoverage.
 Generally, there are three code snippets for the instrument points selector: the initial
 one for creating some data structures for statistics, the final one for writing back the
 function hits data to a file, and the common used one for record a function call. For the
-instrumenter, the initial one for opening a file, the final one for closing a file, and
-the commonly used one just for increasing one to the number of tracepoints then writing it
+instrumenter, the initial code snippet opens a file, the final one closes the file, and
+the commonly used one just increases the number of tracepoints then writes it
 to the file. All the code snippets are carefully assembled with DynIsnt API and
-manipulated with the original binary.
+instrumented into the original binary.
 
 For the purpose of excellent performance, the instrumenter completes the assembly of file
 operations through using the low level system call \emph{open}, \emph{write}, and \emph{close} in
@@ -28,16 +28,16 @@ File System (VFS) level supported by the Linux Operation System. It means that o
 several memory operations overhead is introduced into the instrumentation of each function
 hit.
 
-We provide a tasks speculation implementation with ProActive Scheduler
+We provide a task speculation implementation with ProActive Scheduler
 \cite{pascheduling}. The ProActive Scheduler can be interacted with a control script. The
 control script is interpreted in javascript language based on a script engine, called
 'Rhino', built-in integrated with the distribution of Java Standard Edition 6(Java SE6).
 ProActive Scheduler provides the ability of interactive with the scheduler instance at
-runtime by the fact that script engine can access and invoke the objects and methods in
+runtime by the fact that script engine can access and invoke objects and methods in
 Java.
 
 Our task scheduling policy generator calls the outliers clustering module to establish
-outliers clustering with updated trace data. Then maintaining a blacklist of nodes, each
+outliers clustering with updated trace data. Then it maintains a blacklist, each
 node in the blacklist has a penalty value. The penalty could be eliminated if no further
 outliers are found on a node, and it could be removed from the blacklist. In summary, the
 blacklist is used for keeping the speculative tasks away from the most possible nodes that
